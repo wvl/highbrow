@@ -1,0 +1,39 @@
+{ "name": "highbrow"
+, "version": "0.0.1"
+, "description": "A Backbone Base Framework"
+, "main": "lib/highbrow.js"
+, "repository": ""
+, "keywords": [ "backbone" ]
+, "author": "Wayne Larsen"
+, "license": "BSD"
+, "dependencies": {}
+, "devDependencies":
+  { "backbone": "*"
+  , "bcrypt": "*"
+  , "cheerio": "*"
+  , "commander": "*"
+  , "express": ">3.0.0beta4"
+  , "less": "*"
+  , "mkdirp": "*"
+  , "moment": "*"
+  , "mongoose": "*"
+  , "nct": "*"
+  , "passport": "*"
+  , "passport-local": "*"
+  , "underscore": "*"
+  , "up": "*"
+  , "urlify": "*"
+  , "chai": "*"
+  , "coffee-script": "*"
+  , "mocha": "*"
+  , "requirejs": "*"
+  , "sinon": "*"
+  , "sinon-chai": "*"
+  , "sockjs": "*"
+  , "supertest": "*"
+  , "uglify-js": "*"
+  }
+, "scripts":
+  { "test": "mocha test/*.test.coffee"
+  }
+}
