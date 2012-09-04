@@ -1,0 +1,4 @@
+lib/*
+www/*
+dist
+node_modules
