@@ -8,8 +8,12 @@ Backbone.$ = cheerio
 
 module.exports = app = express()
 
-app.configure('development', function() {
+app.configure(function() {
   app.use(express.logger('dev'));
+});
+
+app.configure('production', function() {
+  app.use(express.static(__dirname+'/release'));
 });
 
 app.configure(function() {
@@ -27,7 +31,7 @@ app.configure(function() {
 
 app.get('/*', function(req, res) {
   var layout = fs.readFileSync(path.join(__dirname, 'app/templates/layout.nct'), 'utf8')
-  var html = nct.renderTemplate(layout, {})
+  var html = nct.renderTemplate(layout, {production: process.env.NODE_ENV=='production'})
   res.send(html);
 });
 

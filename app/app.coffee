@@ -8,7 +8,7 @@ routes = require './routes'
 module.exports = api = {}
 
 if (typeof window != 'undefined')
-  require 'app/templates'
+  require './templates'
   window.browser = true
 else
   global.browser = false

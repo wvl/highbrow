@@ -23,14 +23,24 @@ www/js/vendor/highbrow/%.js: lib/%.js
 	cat $< >> $@
 	echo "\n\nreturn module.exports;\n});" >> $@
 
+VJS = require jquery underscore moment backbone nct model_binder
+VJS := $(VJS:%=www/js/vendor/%.js)
+
 dist/highbrow.js: $(SRC_REQUIRE_JS) highbrow.build.js
 	$(BINDIR)/r.js -o highbrow.build.js
 
-VJS = highbrow require jquery underscore moment backbone nct model_binder
-VJS := $(VJS:%=www/js/vendor/%.js)
+dist/deps.js: $(VJS) highbrow.build.js
+	$(BINDIR)/r.js -o highbrow.build.js
 
+dist/app.js: $(APPJS) app.build.js
+	$(BINDIR)/r.js -o app.build.js
 
-www/js/vendor/highbrow.js: dist/highbrow.js
+RELEASEJS = highbrow app deps
+DISTJS = $(RELEASEJS:%=dist/%.js)
+RELEASEJS := $(RELEASEJS:%=release/js/%.js)
+
+release/js/%.js: dist/%.js
+	mkdir -p $(@D)
 	cp $< $@
 
 www/js/vendor/require.js: node_modules/requirejs/require.js
@@ -66,8 +76,8 @@ www/js/app/templates.js: $(NCT_COMPILED)
 	cat $(NCT_COMPILED) $(NCC_COMPILED) >> $@
 	echo "});" >> $@
 
-prod: dist/highbrow.js
+prod: $(RELEASEJS)
 
-all: $(VJS) $(SRCJS) $(APPJS) www/js/app/templates.js
+all: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
 
 #?

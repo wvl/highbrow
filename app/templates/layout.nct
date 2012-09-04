@@ -14,9 +14,53 @@
 <body>
   <div id="header" class="container"><h1>Header</h1></div>
   <div id="main" class="container"></div>
-  <script data-main="/js/init" src="/js/vendor/require.js"></script>
+  <script src="/js/vendor/require.js"></script>
   <script>
-    require(['app/app'], function(app) {
+    {if production}{no}
+    require.config({
+      baseUrl: 'js'
+    , paths:
+      { 'jquery': 'deps'
+      , 'underscore': 'deps'
+      , 'backbone': 'deps'
+      , 'moment': 'deps'
+      , 'nct': 'deps'
+      , 'model_binder': 'deps'
+      }
+    , shim:
+      { 'backbone': { deps: ['underscore','jquery'], exports: 'Backbone' }
+      , 'underscore': { exports: '_' }
+      , 'moment': { exports: 'moment' }
+      , 'nct': { exports: 'nct' }
+      , 'model_binder': { deps: ['backbone'] }
+      }
+    })
+    {/no}{else}{no}
+    require.config({
+      baseUrl: 'js'
+    , paths:
+      { 'jquery': 'vendor/jquery'
+      , 'underscore': 'vendor/underscore'
+      , 'backbone': 'vendor/backbone'
+      , 'moment': 'vendor/moment'
+      , 'nct': 'vendor/nct'
+      , 'socket.io': 'vendor/socket.io.min'
+      , 'model_binder': 'vendor/model_binder'
+      }
+    , packages: 
+      [ {name: 'highbrow', location: 'vendor/highbrow', main: 'index'}
+      , {name: 'app', location: 'app', main: 'app'}
+      ]
+    , shim:
+      { 'backbone': { deps: ['underscore','jquery'], exports: 'Backbone' }
+      , 'underscore': { exports: '_' }
+      , 'moment': { exports: 'moment' }
+      , 'nct': { exports: 'nct' }
+      , 'model_binder': { deps: ['backbone'] }
+      }
+    })
+    {/no}{/if}
+    require(['app'], function(app) {
       console.log("initing: ", app, $);
       app.init($);
     });
