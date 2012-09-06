@@ -42,6 +42,14 @@ describe "Router", ->
       done()
     r.show '/say'
 
+  it "should set ctx.root as Router root", (done) ->
+    r = new Router()
+    r.msg = 'hello'
+    r.page '/say', (ctx) ->
+      e(ctx.root.msg).to.equal 'hello'
+      done()
+    r.show '/say'
+
   it "should invoke multiple callbacks", (done) ->
     r = new Router().page '/multiple', first, (ctx) ->
       e(ctx.first).to.equal true

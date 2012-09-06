@@ -2,7 +2,7 @@ Backbone = require 'backbone'
 _        = require 'underscore'
 
 class Context
-  constructor: (@path, @state={}) ->
+  constructor: (@path, @state={}, @root) ->
     @params = []
     @canonicalPath = @path
     @state.path = @path
@@ -14,16 +14,16 @@ class Route
     @fns = fns
     @regexp = @pathtoRegexp(@path)
 
-  dispatch: (ctx, root, callback) ->
+  dispatch: (ctx, callback) ->
     i = 0
     next = (err,result) =>
       return callback(err,result) if err or i==@fns.length
 
       fn = @fns[i++]
       if fn.length >= 2
-        fn.call(root, ctx, next)
+        fn.call(ctx.root, ctx, next)
       else
-        next(null, fn.call(root, ctx))
+        next(null, fn.call(ctx.root, ctx))
 
     next()
 
@@ -94,9 +94,10 @@ class Router
       callback = state
       state = {}
 
-    @dispatch(new Context(path, state), @, callback)
 
-  dispatch: (ctx, root, callback) ->
+    @dispatch(new Context(path, state, @), callback)
+
+  dispatch: (ctx, callback) ->
     @trigger 'start', ctx
 
     finish = (err, result) =>
@@ -104,20 +105,20 @@ class Router
         @trigger 'error', err, ctx, result
       else
         @trigger 'show', ctx, result
-      callback.call(root,err,result,ctx) if callback
+      callback.call(ctx.root,err,result,ctx) if callback
 
-    @baseRoute.dispatch ctx, root, (err) =>
+    @baseRoute.dispatch ctx, (err) =>
       return finish(err) if err
 
       # Find a match from this router first
       route = _.find @routes, (r) -> r.match(ctx.path, ctx.params)
 
-      return route.dispatch ctx, root, finish if route
+      return route.dispatch ctx, finish if route
 
       router = _.find @routers, (router,base) ->
         router.match(ctx.path, ctx.params)
 
-      return router.dispatch ctx, root, finish if router
+      return router.dispatch ctx, finish if router
 
       return @trigger('unhandled', ctx)
 
@@ -126,17 +127,16 @@ class Router
     return if @running
     @running = true
     @install()
-    console.log "replace?: ", location.pathname
     @replace(location.pathname+location.search, null, true, callback)
 
   stop: ->
 
   # Replace `path` with optional `state` object
   replace: (path, state, init, callback) ->
-    ctx = new Context(path, state)
+    ctx = new Context(path, state, @)
     ctx.replace = true
     ctx.init = init
-    @dispatch ctx, @, callback
+    @dispatch ctx, callback
 
   mount: (base, fns...) ->
     @routers[@base+base] = new Router(@base+base, fns...)
