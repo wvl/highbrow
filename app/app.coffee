@@ -1,6 +1,4 @@
 _ = require 'underscore'
-_.underscored = (str) ->
-  str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
 backbone = require 'backbone'
 backbone.$ ?= require 'jquery'
 highbrow = require 'highbrow'

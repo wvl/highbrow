@@ -22,7 +22,7 @@ class CompositeView extends ItemView
           console.log "skipping render", location
           @$(location).data('ssr', false)
         else
-          @$(location).attr('data-ssr', true) unless browser
+          @$(location).attr('data-ssr', 'true') unless browser
           @$(location).html view.$el
 
   # Render this views template first, then the child views

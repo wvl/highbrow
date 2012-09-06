@@ -1,5 +1,6 @@
 
 _ = require 'underscore'
+utils = require './utils'
 Router = require './router'
 # LayoutManager = require './layout-manager'
 Store = require './store'
@@ -25,7 +26,7 @@ module.exports = class Application extends Router
     @_layout = layout
     @_main = main
     if @$el.attr('data-ssr')=='true'
-      @$el.data('ssr', false).attr('data-ssr',false)
+      @$el.data('ssr', false).attr('data-ssr','false')
     else
       @close()
       @$el.html nct.render template
@@ -43,14 +44,14 @@ module.exports = class Application extends Router
     @_views[selector] = view
     el = @$el.find(selector)
     view.render()
-    if browser
+    if utils.browser
       if el.data('ssr')
         el.data('ssr', false)
       else
         el.html view.$el
     else
       el.html view.$el
-      el.attr('data-ssr', true)
-    view.onShow() if view.onShow and browser
+      el.attr('data-ssr', 'true')
+    view.onShow() if view.onShow and utils.browser
     # @trigger('show', view)
 

@@ -1,3 +1,5 @@
+_ = require 'underscore'
+
 class ErrorModel
   constructor: (@error,@model) ->
     @attrs = @error.attrs

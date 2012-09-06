@@ -1,4 +1,5 @@
 ErrorModel = require './error-model'
+Backbone = require 'backbone'
 moment = require 'moment'
 _ = require 'underscore'
 
@@ -62,4 +63,5 @@ class ViewModel
     attr = params[0]
     if _.has(@attrs,attr) then @attrs[attr] else @model.get(attr)
 
+ViewModel.extend = Backbone.View.extend
 module.exports = ViewModel

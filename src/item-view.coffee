@@ -1,7 +1,8 @@
 Backbone = require 'backbone'
 _ = require 'underscore'
-nct      = require 'nct'
-require 'model_binder' if typeof window != 'undefined'
+utils    = require './utils'
+nct      = utils.nct
+require 'model_binder' if utils.browser
 
 # A single item view implementation that contains code for rendering
 # and calling several methods on extended views, such as `onRender`.
@@ -12,18 +13,19 @@ class ItemView extends Backbone.View
     @namespace = @options.namespace if @options.namespace
     @namespace ?= @constructor.namespace
     @workflow ?= @options.workflow || {}
-    @binder = new Backbone.ModelBinder() if browser and @model
+    @binder = new Backbone.ModelBinder() if utils.browser and @model
     unless @template
       name = _.underscored(@constructor.name)
       @template = if @namespace then @namespace + '/' + name else name
+      console.log("now: ", @template, name)
 
   id: ->
-    id = 'view-'+_.underscored(@constructor.name)
+    id = 'view-'+(@template || _.underscored(@constructor.name))
     id = id+'-'+@model.id if @model and @model.id
     id
 
   delegateEvents: (events) ->
-    return unless browser
+    return if utils.server
     super
 
   # override to specify title,subtitle,subnav
@@ -45,7 +47,7 @@ class ItemView extends Backbone.View
   # an element from the `id`, `className` and `tagName` properties.
   _ensureElement: ->
     return @setElement(@el, false) if @el
-    if @id and browser
+    if @id and utils.browser
       el = $('#'+ if _.isFunction(@id) then @id() else @id)
       return @setElement(el, false) if el.length and el.data('ssr')
     attrs = _.extend({}, @attributes)
@@ -56,26 +58,26 @@ class ItemView extends Backbone.View
 
   #   var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
   make: (tagName, attributes, content) ->
-    el = if browser then document.createElement(tagName) else Backbone.$("<"+tagName+"></"+tagName+">")
-    Backbone.$(el).attr(attributes) if attributes
-    Backbone.$(el).html(content) if content != null
+    el = if utils.browser then document.createElement(tagName) else utils.$("<"+tagName+"></"+tagName+">")
+    utils.$(el).attr(attributes) if attributes
+    utils.$(el).html(content) if content != null
     el
 
   renderTemplate:  ->
     return unless @template
-    if browser and @$el.data('ssr')
+    if utils.browser and @$el.data('ssr')
       console.log "skipping render", @template
       @$el.data('ssr', false)
     else
-      @$el.attr('data-ssr', true) unless browser
+      @$el.attr('data-ssr', 'true') unless utils.browser
       @$el.html nct.render(@template, @context())
-      console.log "rendered", @$el, @template if browser
+      console.log "rendered", @$el, @template if utils.browser
 
   # Render the view with nct templates
   # You can override this in your view definition.
   render: ->
     @renderTemplate()
-    @onRender() if browser
+    @onRender() if utils.browser
     @
 
   # rerender can be passed to event bindings, as it ignores arguments
