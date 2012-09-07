@@ -36,3 +36,9 @@ base.setDomLibrary = (lib) ->
   base.Backbone.setDomLibrary(lib)
   base.$ = lib
 
+base.extend = (cls,name,protoProps,classProps) ->
+  throw new Error("Unknown base class "+cls) unless base[cls]
+  newcls = base[cls].extend(protoProps, classProps)
+  newcls::name = name
+  newcls
+

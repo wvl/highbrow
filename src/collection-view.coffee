@@ -6,7 +6,7 @@ ItemView = require './item-view'
 class CollectionView extends ItemView
   constructor: ->
     super
-    @itemView ?= @options.itemView || @constructor.module[@constructor.name+'Item']
+    @itemView ?= @options.itemView || @constructor.module[@name+'Item']
     @children = {}
     @bindTo @collection, "add", (model, collection, options) =>
       view = @addChildView(model,options.index)

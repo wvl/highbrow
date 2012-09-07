@@ -9,18 +9,19 @@ require 'model_binder' if utils.browser
 class ItemView extends Backbone.View
   constructor:  ->
     super
+    @name ?= @options.name || @constructor.name
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
     @namespace ?= @constructor.namespace
     @workflow ?= @options.workflow || {}
     @binder = new Backbone.ModelBinder() if utils.browser and @model
     unless @template
-      name = _.underscored(@constructor.name)
-      @template = if @namespace then @namespace + '/' + name else name
-      console.log("now: ", @template, name)
+      throw new Error("Unknown template. Please provide a name or template") unless @name
+      template = _.underscored(@name)
+      @template = if @namespace then @namespace + '/' + template else template
 
   id: ->
-    id = 'view-'+(@template || _.underscored(@constructor.name))
+    id = 'view-'+(@template || _.underscored(@name || ''))
     id = id+'-'+@model.id if @model and @model.id
     id
 
@@ -33,7 +34,7 @@ class ItemView extends Backbone.View
 
   data: ->
     return {} unless @model
-    viewModel = @viewModel || ItemView.viewModels[@model.constructor.name]
+    viewModel = @viewModel || ItemView.viewModels[@model.name]
     if viewModel then new viewModel(@model, @error) else @model
 
   context: ->
