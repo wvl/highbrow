@@ -1,7 +1,7 @@
 { "name": "highbrow"
 , "version": "0.0.1"
 , "description": "A Backbone Base Framework"
-, "main": "lib/highbrow.js"
+, "main": "lib"
 , "repository": ""
 , "keywords": [ "backbone" ]
 , "author": "Wayne Larsen"
