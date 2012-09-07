@@ -11,6 +11,6 @@
   , 'nct': 'empty:'
   }
 , include: 'app'
-, out: 'dist/app.js'
+, out: 'release/app.js'
 }
 

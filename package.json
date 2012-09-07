@@ -1,26 +1,32 @@
 { "name": "highbrow"
-, "version": "0.0.1"
+, "version": "0.0.3"
 , "description": "A Backbone Base Framework"
 , "main": "lib"
-, "repository": ""
+, "repository":
+  { "type": "git"
+  , "url": "https://github.com/wvl/highbrow.git"
+  }
+, "homepage": "https://github.com/wvl/highbrow"
+, "bugs": { "url": "https://github.com/wvl/highbrow/issues" }
 , "keywords": [ "backbone" ]
 , "author": "Wayne Larsen"
 , "license": "BSD"
-, "dependencies": {}
-, "devDependencies":
+, "dependencies":
   { "backbone": "*"
-  , "bcrypt": "*"
+  , "moment": "*"
+  , "underscore": "*"
+  }
+, "devDependencies":
+  { "bcrypt": "*"
   , "cheerio": "*"
   , "commander": "*"
   , "express": ">3.0.0beta4"
   , "less": "*"
   , "mkdirp": "*"
-  , "moment": "*"
   , "mongoose": "*"
   , "nct": "*"
   , "passport": "*"
   , "passport-local": "*"
-  , "underscore": "*"
   , "up": "*"
   , "urlify": "*"
   , "chai": "*"
@@ -35,5 +41,6 @@
   }
 , "scripts":
   { "test": "mocha test/*.test.coffee"
+  , "prepublish": "make prod"
   }
 }

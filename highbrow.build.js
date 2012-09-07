@@ -7,15 +7,13 @@
   , 'moment': { exports: 'moment' }
   , 'underscore': { exports: '_' }
   }
-, dir: 'dist'
+, dir: 'release'
 , packages: [
     {name: 'highbrow', location: 'highbrow', main: 'index'}
   ]
 , modules:
   [ { name: 'highbrow'
     , exclude: ['nct','backbone','moment','underscore','model_binder']
-    }
-  , { name: 'deps'
     }
   ]
 }

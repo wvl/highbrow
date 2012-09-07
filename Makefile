@@ -28,21 +28,14 @@ VJS := $(VJS:%=www/js/vendor/%.js)
 
 dist/highbrow.js: $(SRC_REQUIRE_JS) highbrow.build.js
 	$(BINDIR)/r.js -o highbrow.build.js
-	cp dist/highbrow/index.js dist/highbrow.js
+	mkdir -p dist
+	cp release/highbrow/index.js dist/highbrow.js
 
-dist/deps.js: $(VJS) highbrow.build.js
+release/deps.js: $(VJS) highbrow.build.js
 	$(BINDIR)/r.js -o highbrow.build.js
 
-dist/app.js: $(APPJS) app.build.js
+release/app.js: $(APPJS) app.build.js
 	$(BINDIR)/r.js -o app.build.js
-
-RELEASEJS = highbrow app deps
-DISTJS = $(RELEASEJS:%=dist/%.js)
-RELEASEJS := $(RELEASEJS:%=release/js/%.js)
-
-release/js/%.js: dist/%.js
-	mkdir -p $(@D)
-	cp $< $@
 
 www/js/vendor/require.js: node_modules/requirejs/require.js
 	cp $< $@
@@ -77,7 +70,7 @@ www/js/app/templates.js: $(NCT_COMPILED)
 	cat $(NCT_COMPILED) $(NCC_COMPILED) >> $@
 	echo "});" >> $@
 
-prod: $(RELEASEJS)
+prod: dist/highbrow.js
 
 all: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
 
