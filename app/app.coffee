@@ -1,7 +1,7 @@
 _ = require 'underscore'
 backbone = require 'backbone'
-backbone.$ ?= require 'jquery'
 highbrow = require 'highbrow'
+highbrow.setDomLibrary require('jquery') if highbrow.browser
 routes = require './routes'
 module.exports = api = {}
 
@@ -12,13 +12,12 @@ else
   global.browser = false
 
 buildApp = ($) ->
-  app = new highbrow.Application({$el: $('#main')})
+  app = new highbrow.Application({$el: $('body')})
   app.page '/', routes.index
   app.page '', routes.index
 
   app.on 'show', (ctx, view) ->
-    console.log "show: ", view
-    @display view if view and view instanceof highbrow.ItemView
+    @display view, '#main' if view and view instanceof highbrow.ItemView
 
   app
 

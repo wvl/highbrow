@@ -28,6 +28,7 @@ VJS := $(VJS:%=www/js/vendor/%.js)
 
 dist/highbrow.js: $(SRC_REQUIRE_JS) highbrow.build.js
 	$(BINDIR)/r.js -o highbrow.build.js
+	cp dist/highbrow/index.js dist/highbrow.js
 
 dist/deps.js: $(VJS) highbrow.build.js
 	$(BINDIR)/r.js -o highbrow.build.js
