@@ -74,4 +74,17 @@ prod: dist/highbrow.js
 
 all: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
 
+docco:
+	docco src/*.coffee
+	git add docs/*
+	git stash
+	git checkout gh-pages
+	rm -rdf docs
+	git stash pop
+
+doccoCommit:
+	git commit -m "updating docs"
+	git push origin gh-pages
+	git checkout master
+
 #?
