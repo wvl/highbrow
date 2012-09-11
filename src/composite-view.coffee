@@ -2,13 +2,25 @@
 _ = require 'underscore'
 ItemView = require './item-view'
 
+# This view allows you to compose multiple
+# views together, by setting the `subViews`
+# attribute.
+#
+# The subViews attribute should be a function
+# that returns either an array or an object
+# of views.
+# * If it is an array, the views will simply be
+# appended.
+# * If it is an object, the views will be
+# inserted into the dom at the given selector.
 class CompositeView extends ItemView
   constructor: ->
     super
     @_subViews = @subViews()
-    console.log "Subviews: ", @_subViews if browser
 
-  # override with sub views
+  # override with sub views. It should be
+  # a function that returns an object:
+  #  { '.class': new View({model: this.model}) }
   subViews: -> {}
 
   renderSubViews: (callback) ->

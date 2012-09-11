@@ -7,6 +7,16 @@ require 'model_binder' if utils.browser
 # A single item view implementation that contains code for rendering
 # and calling several methods on extended views, such as `onRender`.
 class ItemView extends Backbone.View
+
+  # In addition to the standard keys that can be passed to normal
+  # Backbone views, this view class also takes the following keys:
+  #
+  # template: The name of the template to be used for this view.
+  #   Normally, this template name is derived from the name of the
+  #   view, converted into lowercase and underscores. So, if the name
+  #   of the view is "UserSignup", the template name that will be used
+  #   is "user_signup".
+  #
   constructor:  ->
     super
     @name ?= @options.name || @constructor.name
@@ -20,10 +30,13 @@ class ItemView extends Backbone.View
       template = _.underscored(@name)
       @template = if @namespace then @namespace + '/' + template else template
 
+  #
+  # When rendering a collection
   id: ->
     id = 'view-'+(@template || _.underscored(@name || ''))
     id = id+'-'+@model.id if @model and @model.id
     id
+
 
   delegateEvents: (events) ->
     return if utils.server
@@ -46,6 +59,10 @@ class ItemView extends Backbone.View
   # If `this.el` is a string, pass it through `$()`, take the first
   # matching element, and re-assign it to `el`. Otherwise, create
   # an element from the `id`, `className` and `tagName` properties.
+  #
+  # Changes from Backbone default:
+  # * If we are in the browser, check to see if the view has
+  #   already been rendered (by the server).
   _ensureElement: ->
     return @setElement(@el, false) if @el
     if @id and utils.browser
@@ -58,12 +75,17 @@ class ItemView extends Backbone.View
     @setElement @make(@tagName, attrs), false
 
   #   var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
+  # Changes from Backbone:
+  #  Use highbrow.$ to create elements on the server
   make: (tagName, attributes, content) ->
     el = if utils.browser then document.createElement(tagName) else utils.$("<"+tagName+"></"+tagName+">")
     utils.$(el).attr(attributes) if attributes
     utils.$(el).html(content) if content != null
     el
 
+  # Render template will render the associated template.
+  # * We do not rerender the template, if the view has already been
+  #   rendered on the server.
   renderTemplate:  ->
     return unless @template
     if utils.browser and @$el.data('ssr')
@@ -81,11 +103,12 @@ class ItemView extends Backbone.View
     @onRender() if utils.browser
     @
 
-  # rerender can be passed to event bindings, as it ignores arguments
+  # empty the associated element, and render
   rerender: ->
     @$el.empty()
     @render()
 
+  # A helper function to simplify using Backbone ModelBinder
   convertBindings: (bindings) ->
     result = {}
     _.each bindings, (val,key) ->
@@ -102,6 +125,8 @@ class ItemView extends Backbone.View
     result
 
 
+  # Associated bindings.
+  # TODO: Explain the format of this.bindings
   initBindings: ->
     if @bindings
       bindings = @convertBindings(@bindings)

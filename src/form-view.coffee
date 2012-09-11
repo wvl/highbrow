@@ -1,6 +1,12 @@
 ItemView = require './item-view'
 _ = require 'underscore'
 
+# The default FormView class that can be
+# used as a base class.
+#
+# No events are included. To use the default
+# form view, pass 'handleFormSubmit' to the
+# submit event of your form.
 class FormView extends ItemView
 
 server_error_message = """
@@ -11,6 +17,12 @@ Please try again in a few minutes. If the error persists,
 please contact support.
 """
 
+# The basic form view is included here as a MixIn that can
+# be mixed into other views.
+#
+# It provides a default implementation of syncing a form
+# to a model, and a submit event handler that will
+# save the model to the server.
 FormViewMixin =
   # override for custom handling
   formToObject: -> @$('form').toObject()

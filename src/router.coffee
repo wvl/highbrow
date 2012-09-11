@@ -1,6 +1,28 @@
 Backbone = require 'backbone'
 _        = require 'underscore'
 
+# The highbrow router is heavily inspired by page.js:
+# http://visionmedia.github.com/page.js/
+#
+# This version is also usable on the server (no dependency
+# on document being defined). Multiple routers can be 
+# nested, allowing an app to be composed of multiple 
+# pieces and joined together.
+#
+# var app = new Router()
+#
+# app.page('/', middleware, handler);
+# var dashboard = app.mount(
+#   new Router('/dashboard', dashboard.middleware));
+# dashboard.page('', dashboard.root);
+# dashboard.page('new', dashboard.newPage);
+#
+
+
+#
+# Context is the object that is passed to each
+# route function. Intermediate data can be
+# attached to the object as needed.
 class Context
   constructor: (@path, @state={}, @root) ->
     @params = []
@@ -8,6 +30,9 @@ class Context
     @state.path = @path
 
 
+#
+# The internal implementation of each page.
+#
 class Route
   constructor: (@path, fns...) ->
     @keys = []
@@ -72,9 +97,22 @@ class Route
     return new RegExp('^' + p + '$', 'i')
 
 
+#
+# This is the entry point to highbrow's router.
+# Create a new instance of the router, and attach
+# pages to it:
+#
+# router = new Router('/app')
 class Router
   @canNavigateAway = -> true
 
+  # The router can be mapped to a subpath, by
+  # passing that in as the first parameter to the
+  # constructor.
+  #
+  # Default routing functions can also be attached
+  # to the router, that will be called when any
+  # path on this router matches.
   constructor: (@base='', fns...) ->
     @running = false
     @routes = []
@@ -85,10 +123,14 @@ class Router
     p = if path.slice(path.length-1)=='/' then path else path+'/'
     @baseRoute.match(p,params)
 
+  # Define a new page on the router.
+  # The path can contain:
+  # page('/user/:user', load, show) // parameters
   page: (path, fns...) ->
     @routes.push new Route(@base+path, fns...)
     @
 
+  # Route to the given path, with an optional state and callback
   show: (path, state, callback) ->
     if _.isFunction(state)
       callback = state
@@ -123,6 +165,10 @@ class Router
       return @trigger('unhandled', ctx)
 
 
+  # When called from the browser, this will dispatch to the route
+  # matching the browser's current location.
+  #
+  # An optional callback will be called when routing has finished
   start: (callback) ->
     return if @running
     @running = true
@@ -138,9 +184,22 @@ class Router
     ctx.init = init
     @dispatch ctx, callback
 
+  # Mount a new router at the given base. This lets you nest different
+  # segments of your application.
+  #
+  # For example, you can mount an admin section, and ensure the user
+  # is authenticated before following any of its pages:
+  #
+  # var admin = router.mount('/admin', ensureUserIsAdmin);
+  # admin.page('', adminRoutes.rootPage);
+  # admin.page('/dashboard', adminRoutes.dashboard);
   mount: (base, fns...) ->
     @routers[@base+base] = new Router(@base+base, fns...)
 
+  # Install is called from start, and will install the
+  # pushState,popState event handlers for the html5 history api.
+  # It will also install an onclick handler that will intercept
+  # any matching routes.
   install: ->
     @on 'show', (ctx) ->
       if ctx.replace

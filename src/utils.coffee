@@ -24,18 +24,38 @@ base.BindTo =
     @_BindToBindings = []
 
 
+#
+# Using "Convention over Configuration" to lookup templates, using
+# `underscored` versions of the view's name:
 _.underscored ?= (str) ->
   str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
 
+#
+# Accessible variables to determine what environment we're running in.
 base.browser = typeof window != 'undefined'
 base.server = !base.browser
 
 base.$ = undefined;
 
+# Use this function to set what Dom Library to use. This can be
+# cheerio on the server, and jquery (or equivalent) on the client.
 base.setDomLibrary = (lib) ->
   base.Backbone.setDomLibrary(lib)
   base.$ = lib
 
+# Because highbrow uses "convention over configuration", we need
+# a name associated with our views and models. The default extend
+# implementation used from javascript with backbone does not give
+# you this name. Therefore, this is a simple wrapper around
+# backbone's extend that lets you set the name of the view/model.
+#
+# eg.
+# var User = highbrow.extend('Model','User', {})
+#
+# This is not needed from coffeescript, where this is sufficient:
+#
+# class User extends highbrow.Model
+#
 base.extend = (cls,name,protoProps,classProps) ->
   throw new Error("Unknown base class "+cls) unless base[cls]
   newcls = base[cls].extend(protoProps, classProps)

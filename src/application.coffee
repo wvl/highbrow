@@ -2,11 +2,24 @@
 _ = require 'underscore'
 utils = require './utils'
 Router = require './router'
-# LayoutManager = require './layout-manager'
 Store = require './store'
 nct = require 'nct'
 
+#
+# Highbrow Application Base class
+#
+#   * Extends the Router
+#   * Has a builtin layout manager
+#   * Has a builtin `store`, for caching data
+#
+# This is the simplest way to create a highbrow
+# application.
+#
+# @param {$el} Jquery (or equivalent) DOM element 
+#
 module.exports = class Application extends Router
+
+  # The dom element should be passed into the constructor.
   constructor: (options={}) ->
     super options.base || ''
 
@@ -21,6 +34,16 @@ module.exports = class Application extends Router
     _.each @_views, (view) -> view?.close()
     @_views = {}
 
+  # Switch layouts. This can be called for each
+  # individual route. If this layout is currently
+  # active, it will simply return.
+  #
+  # * @param layout   String: The layout name
+  # * @param template String: Optional template to render
+  # * @param main     String: This element will be used to
+  #                         display the 'main' view into
+  # * @param sections Object: An object of {name: view}
+  #
   layout: (layout, template, main, sections={}) ->
     return if @_layout==layout
     @_layout = layout
@@ -29,7 +52,7 @@ module.exports = class Application extends Router
       @$el.data('ssr', false).attr('data-ssr','false')
     else
       @close()
-      @$el.html nct.render template
+      @$el.html nct.render template if template
     _.each sections, (fn, sel) => @display(fn.call(@), sel)
 
   # Displays a backbone view instance inside of the main region.
@@ -39,7 +62,6 @@ module.exports = class Application extends Router
   # or just before closing the view, respectively.
   display: (view, selector) ->
     selector ?= @_main
-    # @trigger('close', @currentView)
     @_views[selector]?.close()
     @_views[selector] = view
     el = @$el.find(selector)
@@ -53,5 +75,3 @@ module.exports = class Application extends Router
       el.html view.$el
       el.attr('data-ssr', 'true')
     view.onShow() if view.onShow and utils.browser
-    # @trigger('show', view)
-

@@ -2,9 +2,15 @@ Backbone = require 'backbone'
 _        = require 'underscore'
 
 
+# Extend Backbone.Model with nested relationships. With this
+# base class, you can compose your models together.
 class Model extends Backbone.Model
   idAttribute: '_id'
 
+
+  # A node style accessor, that fetches the given id, 
+  # calling the given callback on completion, with either
+  # an error value, or the model.
   @find: (id, callback) ->
     model = new @()
     model.set(model.idAttribute, id)
@@ -14,9 +20,25 @@ class Model extends Backbone.Model
       callback(m)
     model.fetch {success, error}
 
+  # Override this to describe the relationships that this
+  # model has. This will be used to instantiate the sub
+  # models or collections.
+  #
+  # This should be an object, ex:
+  #
+  #     relations: {
+  #       user: models.User,
+  #       settings: collection.Settings
+  #     }
+  #
   @relations: {}
+
+  # As in 'relations', however, when this model is serialized
+  # to the server, the embedded models/collections will
+  # be included in the JSON.
   @embeddedRelations: {}
 
+  # Checks whether the model is valid or not.
   savable: ->
     return unless @validations
     required = _.filter (@validations.required || []), (f) =>
