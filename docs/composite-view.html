@@ -1,0 +1,47 @@
+<!DOCTYPE html>  <html> <head>   <title>composite-view.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="application.html">                 application.coffee               </a>                                           <a class="source" href="collection-view.html">                 collection-view.coffee               </a>                                           <a class="source" href="collection.html">                 collection.coffee               </a>                                           <a class="source" href="composite-view.html">                 composite-view.coffee               </a>                                           <a class="source" href="error-model.html">                 error-model.coffee               </a>                                           <a class="source" href="form-view.html">                 form-view.coffee               </a>                                           <a class="source" href="index.html">                 index.coffee               </a>                                           <a class="source" href="item-view.html">                 item-view.coffee               </a>                                           <a class="source" href="model.html">                 model.coffee               </a>                                           <a class="source" href="region-manager.html">                 region-manager.coffee               </a>                                           <a class="source" href="router.html">                 router.coffee               </a>                                           <a class="source" href="store.html">                 store.coffee               </a>                                           <a class="source" href="utils.html">                 utils.coffee               </a>                                           <a class="source" href="view-model.html">                 view-model.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               composite-view.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nv">_ = </span><span class="nx">require</span> <span class="s">&#39;underscore&#39;</span>
+<span class="nv">ItemView = </span><span class="nx">require</span> <span class="s">&#39;./item-view&#39;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>This view allows you to compose multiple
+views together, by setting the <code>subViews</code>
+attribute.</p>
+
+<p>The subViews attribute should be a function
+that returns either an array or an object
+of views.
+* If it is an array, the views will simply be
+appended.
+* If it is an object, the views will be
+inserted into the dom at the given selector.</p>             </td>             <td class="code">               <div class="highlight"><pre><span class="k">class</span> <span class="nx">CompositeView</span> <span class="k">extends</span> <span class="nx">ItemView</span>
+  <span class="nv">constructor: </span><span class="o">-&gt;</span>
+    <span class="k">super</span>
+    <span class="vi">@_subViews = </span><span class="nx">@subViews</span><span class="p">()</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <p>override with sub views. It should be
+a function that returns an object:
+ { '.class': new View({model: this.model}) }</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">subViews: </span><span class="o">-&gt;</span> <span class="p">{}</span>
+
+  <span class="nv">renderSubViews: </span><span class="nf">(callback) -&gt;</span>
+    <span class="k">if</span> <span class="nx">_</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">@_subViews</span><span class="p">)</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subViews</span><span class="p">,</span> <span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">@$el</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">().</span><span class="nx">el</span><span class="p">)</span> <span class="k">if</span> <span class="nx">view</span><span class="o">?</span><span class="p">.</span><span class="nx">render</span>
+    <span class="k">else</span>
+      <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subViews</span><span class="p">,</span> <span class="p">(</span><span class="nx">view</span><span class="p">,</span> <span class="nx">location</span><span class="p">)</span> <span class="o">=&gt;</span>
+        <span class="nx">view</span><span class="p">.</span><span class="nx">render</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nx">browser</span> <span class="o">and</span> <span class="nx">@$</span><span class="p">(</span><span class="nx">location</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s">&#39;ssr&#39;</span><span class="p">)</span>
+          <span class="nx">console</span><span class="p">.</span><span class="nx">log</span> <span class="s">&quot;skipping render&quot;</span><span class="p">,</span> <span class="nx">location</span>
+          <span class="nx">@$</span><span class="p">(</span><span class="nx">location</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s">&#39;ssr&#39;</span><span class="p">,</span> <span class="kc">false</span><span class="p">)</span>
+        <span class="k">else</span>
+          <span class="nx">@$</span><span class="p">(</span><span class="nx">location</span><span class="p">).</span><span class="nx">attr</span><span class="p">(</span><span class="s">&#39;data-ssr&#39;</span><span class="p">,</span> <span class="s">&#39;true&#39;</span><span class="p">)</span> <span class="nx">unless</span> <span class="nx">browser</span>
+          <span class="nx">@$</span><span class="p">(</span><span class="nx">location</span><span class="p">).</span><span class="nx">html</span> <span class="nx">view</span><span class="p">.</span><span class="nx">$el</span></pre></div>             </td>           </tr>                               <tr id="section-4">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-4">&#182;</a>               </div>               <p>Render this views template first, then the child views</p>             </td>             <td class="code">               <div class="highlight"><pre>  <span class="nv">render: </span><span class="nf">(callback) -&gt;</span>
+    <span class="nx">@renderTemplate</span><span class="p">()</span>
+    <span class="nx">@renderSubViews</span><span class="p">()</span>
+    <span class="nx">@onRender</span><span class="p">()</span>
+    <span class="nx">@</span>
+
+  <span class="nv">onShow: </span><span class="o">-&gt;</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subViews</span><span class="p">,</span> <span class="nf">(view) -&gt;</span> <span class="nx">view</span><span class="p">.</span><span class="nx">onShow</span><span class="p">()</span> <span class="k">if</span> <span class="nx">view</span><span class="o">?</span><span class="p">.</span><span class="nx">onShow</span>
+
+  <span class="nv">close: </span><span class="o">-&gt;</span>
+    <span class="k">super</span>
+    <span class="nx">_</span><span class="p">.</span><span class="nx">each</span> <span class="nx">@_subViews</span><span class="p">,</span> <span class="nf">(view) -&gt;</span> <span class="nx">view</span><span class="o">?</span><span class="p">.</span><span class="nx">close</span><span class="p">()</span>
+
+
+<span class="nv">module.exports = </span><span class="nx">CompositeView</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
