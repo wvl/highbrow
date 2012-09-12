@@ -27,8 +27,11 @@ base.BindTo =
 #
 # Using "Convention over Configuration" to lookup templates, using
 # `underscored` versions of the view's name:
-_.underscored ?= (str) ->
+base.underscored = (str) ->
   str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
+_.underscored ?=  base.underscored
+
+
 
 #
 # Accessible variables to determine what environment we're running in.
