@@ -7,6 +7,9 @@ _        = require 'underscore'
 class Model extends Backbone.Model
   idAttribute: '_id'
 
+  constructor: ->
+    super
+    @name ?= @constructor.name
 
   # A node style accessor, that fetches the given id, 
   # calling the given callback on completion, with either
