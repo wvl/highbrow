@@ -15,10 +15,12 @@ module.exports = class Store
     @[bucket][name] = value
     @trigger 'setIn', bucket, name, value
     @trigger "set:#{bucket}:#{name}", value
+    value
 
   set: (name, value) ->
     @[name] = value
     @trigger 'set', name, value
     @trigger 'set:'+name, value
+    value
 
 _.extend Store.prototype, Backbone.Events
