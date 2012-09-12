@@ -70,9 +70,20 @@ www/js/app/templates.js: $(NCT_COMPILED)
 	cat $(NCT_COMPILED) $(NCC_COMPILED) >> $@
 	echo "});" >> $@
 
-prod: dist/highbrow.js
+prod: dist/highbrow.js release/app.js release/deps.js
 
-all: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
+dist: dist/highbrow.js
+
+build: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
+
+all: build prod
+
+clean:
+	rm $(VJS)
+	rm $(SRCJS)
+	rm $(SRC_REQUIRE_JS)
+	rm $(APPJS)
+	rm www/js/app/templates.js
 
 docco:
 	docco src/*.coffee
@@ -84,4 +95,5 @@ docco:
 	git push origin gh-pages
 	git checkout master
 
+.DEFAULT_GOAL := build
 #?
