@@ -53,6 +53,7 @@ module.exports = class Application extends Router
     else
       @close()
       @$el.html nct.render template if template
+      @$el.attr('data-ssr', 'true') if utils.server
     _.each sections, (fn, sel) => @display(fn.call(@), sel)
 
   # Displays a backbone view instance inside of the main region.
