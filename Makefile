@@ -76,14 +76,11 @@ all: $(VJS) $(SRCJS) $(SRC_REQUIRE_JS) $(APPJS) www/js/app/templates.js
 
 docco:
 	docco src/*.coffee
-	git add docs/*
-	git stash
+	git stash -u
 	git checkout gh-pages
-	rm -rdf docs
+	rm -r docs
 	git stash pop
-
-doccoCommit:
-	git commit -m "updating docs"
+	git commit -a -m "updating docs"
 	git push origin gh-pages
 	git checkout master
 
