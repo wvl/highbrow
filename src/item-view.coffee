@@ -17,18 +17,21 @@ class ItemView extends Backbone.View
   #   of the view is "UserSignup", the template name that will be used
   #   is "user_signup".
   #
-  constructor:  ->
+  _configure:  ->
     super
     @name ?= @options.name || @constructor.name
     @template ?= @options.template
     @namespace = @options.namespace if @options.namespace
     @namespace ?= @constructor.namespace
     @workflow ?= @options.workflow || {}
-    @binder = new Backbone.ModelBinder() if utils.browser and @model
     unless @template
       throw new Error("Unknown template. Please provide a name or template") unless @name
       template = _.underscored(@name)
       @template = if @namespace then @namespace + '/' + template else template
+
+  constructor: ->
+    super
+    @binder = new Backbone.ModelBinder() if utils.browser and @model
 
   #
   # When rendering a collection
