@@ -1,5 +1,5 @@
 { "name": "highbrow"
-, "version": "0.0.3"
+, "version": "0.0.4"
 , "description": "A Backbone Base Framework"
 , "main": "lib"
 , "repository":
@@ -14,6 +14,7 @@
 , "dependencies":
   { "backbone": "*"
   , "moment": "*"
+  , "nct": "*"
   , "underscore": "*"
   }
 , "devDependencies":
@@ -24,7 +25,6 @@
   , "less": "*"
   , "mkdirp": "*"
   , "mongoose": "*"
-  , "nct": "*"
   , "passport": "*"
   , "passport-local": "*"
   , "up": "*"
