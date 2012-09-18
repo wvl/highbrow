@@ -1,6 +1,7 @@
 
 _ = require 'underscore'
 ItemView = require './item-view'
+utils    = require './utils'
 
 # This view allows you to compose multiple
 # views together, by setting the `subViews`
@@ -30,11 +31,11 @@ class CompositeView extends ItemView
     else
       _.each @_subViews, (view, location) =>
         view.render()
-        if browser and @$(location).data('ssr')
+        if utils.browser and @$(location).data('ssr')
           console.log "skipping render", location
           @$(location).data('ssr', false)
         else
-          @$(location).attr('data-ssr', 'true') unless browser
+          @$(location).attr('data-ssr', 'true') unless utils.browser
           @$(location).html view.$el
 
   # Render this views template first, then the child views
