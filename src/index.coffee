@@ -31,6 +31,8 @@ base.Application    = require './application'
 # [Router](router.html)
 base.Router         = require('./router')
 
+base.handlers = require './handlers'
+
 base.setViewModels = (viewModels) ->
   base.ItemView.viewModels = viewModels
 
