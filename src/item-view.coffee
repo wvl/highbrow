@@ -92,12 +92,12 @@ class ItemView extends Backbone.View
   renderTemplate:  ->
     return unless @template
     if utils.browser and @$el.data('ssr')
-      console.log "skipping render", @template
+      # console.log "skipping render", @template
       @$el.data('ssr', false)
     else
       @$el.attr('data-ssr', 'true') unless utils.browser
       @$el.html nct.render(@template, @context())
-      console.log "rendered", @$el, @template if utils.browser
+      # console.log "rendered", @$el, @template if utils.browser
 
   # Render the view with nct templates
   # You can override this in your view definition.

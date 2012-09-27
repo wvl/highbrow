@@ -73,7 +73,7 @@ FormViewMixin =
 
       error: (model, response, options) =>
         @_handleError(response)
-        console.log "Handle error", model, response, options
+        # console.log "Handle error", model, response, options
         @rerender()
         @trigger 'error', @error
 

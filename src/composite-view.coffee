@@ -32,7 +32,7 @@ class CompositeView extends ItemView
       _.each @_subViews, (view, location) =>
         view.render()
         if utils.browser and @$(location).data('ssr')
-          console.log "skipping render", location
+          # console.log "skipping render", location
           @$(location).data('ssr', false)
         else
           @$(location).attr('data-ssr', 'true') unless utils.browser
