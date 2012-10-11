@@ -20,8 +20,8 @@ nct = require 'nct'
 module.exports = class Application extends Router
 
   # The dom element should be passed into the constructor.
-  constructor: (options={}) ->
-    super options.base || ''
+  constructor: (options={}, fns...) ->
+    super options.base || '', fns...
 
     @$el = options.$el
     throw new Error("An '$el' must be specified") unless @$el
