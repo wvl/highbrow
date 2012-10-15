@@ -226,6 +226,9 @@ class Router
       path = el.pathname + el.search
       return if el.hash or !sameOrigin(href)
 
+      return if e.altKey or e.ctrlKey or e.metaKey or e.shiftKey
+      return if $(el).attr('target') == '_blank'
+
       e.preventDefault()
       @show path
 
