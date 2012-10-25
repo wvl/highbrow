@@ -69,10 +69,13 @@ class Model extends Backbone.Model
     _.each relations, (constructor, key) =>
       if attrs[key] instanceof Backbone.Collection
         @[key] = attrs[key]
+        @[key].setParent(@) if @[key]?.setParent
       else if attrs[key] instanceof Backbone.Model
         @[key] = attrs[key]
+        @[key].setParent(@) if @[key]?.setParent
       else
         @[key] ?= new constructor()
+        @[key].setParent(@) if @[key]?.setParent
 
         if attrs[key]
           if _.isString(attrs[key])
@@ -90,7 +93,6 @@ class Model extends Backbone.Model
       #   args[0] = "#{key}:#{args[0]}"
       #   @.trigger.apply(@, args)
 
-      @[key].setParent(@) if @[key]?.setParent
 
       delete attrs[key] if attrs[key]
 
