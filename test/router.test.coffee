@@ -87,6 +87,24 @@ describe "Router", ->
 
     r.show '/unhandled'
 
+  describe "querystring", ->
+    it "should have an empty querystring", (done) ->
+      r = new Router()
+      r.page '/default', (ctx) ->
+        e(ctx.querystring).to.equal('')
+        e(ctx.query()).to.eql({})
+        done()
+      r.show '/default'
+
+    it "should parse querystring", (done) ->
+      r = new Router()
+      r.page '/default', (ctx) ->
+        e(ctx.querystring).to.equal('hello=true')
+        e(ctx.query()).to.eql({hello: 'true'})
+        e(ctx.query('hello')).to.equal('true')
+        done()
+      r.show '/default?hello=true'
+
 describe "Mounted router", ->
   it "should allow a router to be mounted at a fixed base", (done) ->
     r = new Router()

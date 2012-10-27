@@ -1,5 +1,6 @@
 Backbone = require 'backbone'
 _        = require 'underscore'
+qs       = require './querystring'
 
 # The highbrow router is heavily inspired by page.js:
 # http://visionmedia.github.com/page.js/
@@ -27,7 +28,14 @@ class Context
   constructor: (@path, @state={}, @root) ->
     @params = []
     @canonicalPath = @path
+    i = @path.indexOf('?')
+    @querystring = if ~i then @path.slice(i+1) else ''
+    @path = @path.slice(0,i) if ~i
     @state.path = @path
+
+  query: (key) ->
+    obj = qs.parse(@querystring)
+    if key then obj[key] else obj
 
 
 #
