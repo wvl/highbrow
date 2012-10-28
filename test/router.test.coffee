@@ -26,13 +26,13 @@ describe "Router", ->
     setTimeout next, 1
 
   it "should invoke a callback", (done) ->
-    new Router().page('/', -> done()).show('/')
+    e(new Router().page('/', -> done()).show('/')).to.be.true
 
   it "should populate ctx.params", (done) ->
     r = new Router().page '/post/:slug', (ctx) ->
       e(ctx.params.slug).to.equal 'one'
       done()
-    r.show '/post/one'
+    e(r.show('/post/one')).to.be.true
 
   it "should call the route functions with the router base as this", (done) ->
     r = new Router()
@@ -40,7 +40,7 @@ describe "Router", ->
     r.page '/say', (ctx) ->
       e(@msg).to.equal 'hello'
       done()
-    r.show '/say'
+    e(r.show('/say')).to.be.true
 
   it "should set ctx.root as Router root", (done) ->
     r = new Router()
@@ -60,7 +60,7 @@ describe "Router", ->
       e(ctx.first).to.equal false
       done()
 
-    r.show '/multiple'
+    e(r.show('/multiple')).to.be.true
 
   it "show should also return callback", (done) ->
     r = new Router().page '/multiple', first, ->
@@ -85,7 +85,7 @@ describe "Router", ->
       e(ctx.path).to.equal '/unhandled'
       done()
 
-    r.show '/unhandled'
+    e(r.show('/unhandled')).to.be.false
 
   describe "querystring", ->
     it "should have an empty querystring", (done) ->
@@ -110,7 +110,7 @@ describe "Mounted router", ->
     r = new Router()
     r.mount('/user').page '/show', (ctx) ->
       done()
-    r.show '/user/show'
+    e(r.show('/user/show')).to.be.true
 
   it "should allow a router to be mounted with index page", (done) ->
     r = new Router()
@@ -133,9 +133,11 @@ describe "Mounted router", ->
       e(ctx.user).to.equal true
       'OK'
 
-    r.show '/user/show', (err, result) ->
+    routed = r.show '/user/show', (err, result) ->
       e(result).to.equal 'OK'
       done()
+
+    e(routed).to.be.true
 
   it "multiple nested routers", (done) ->
     r = new Router()
@@ -152,10 +154,26 @@ describe "Mounted router", ->
       e(ctx.dashboard).to.equal true
       e(@msg).to.equal 'hello'
       'OK'
-    r.show '/user/dashboard/show', (err, result) ->
+    routed = r.show '/user/dashboard/show', (err, result) ->
       e(result).to.equal 'OK'
       e(@msg).to.equal 'hello'
       done()
+
+    e(routed).to.be.true
+
+  it "show should return false if not matched", ->
+    r = new Router()
+    r.page '/base'
+    user = r.mount '/user', ->
+    dash = user.mount '/dashboard', ->
+    dash.page '/final'
+    e(r.show('/blha')).to.be.false
+    e(r.show('/user/blah')).to.be.false
+    e(r.show('/user')).to.be.false
+    e(r.show('/user/dashboard/blah')).to.be.false
+    e(r.show('/user/dashboard/final/two')).to.be.false
+
+    e(r.show('/user/dashboard/final')).to.be.true
 
   it "should set up params with multiple routers", (done) ->
     r = new Router()

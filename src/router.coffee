@@ -47,12 +47,14 @@ class Route
     @fns = fns
     @regexp = @pathtoRegexp(@path)
 
-  dispatch: (ctx, callback) ->
+  dispatch: (ctx, callback, fns=[]) ->
     i = 0
-    next = (err,result) =>
-      return callback(err,result) if err or i==@fns.length
+    fns = fns.concat(@fns)
 
-      fn = @fns[i++]
+    next = (err,result) =>
+      return callback(err,result) if err or i==fns.length
+
+      fn = fns[i++]
       if fn.length >= 2
         fn.call(ctx.root, ctx, next)
       else
@@ -126,6 +128,7 @@ class Router
     @routes = []
     @routers = {}
     @baseRoute = new Route(@base+'/*', fns...)
+    @baseRouteDispatch = _.bind(@baseRoute.dispatch, @baseRoute)
 
   match: (path, params) ->
     p = if path.slice(path.length-1)=='/' then path else path+'/'
@@ -147,8 +150,9 @@ class Router
 
     @dispatch(new Context(path, state, @), callback)
 
-  dispatch: (ctx, callback) ->
+  dispatch: (ctx, callback, fns=[]) ->
     @trigger 'start', ctx
+    fns.push(@baseRouteDispatch)
 
     finish = (err, result) =>
       if err
@@ -157,20 +161,22 @@ class Router
         @trigger 'show', ctx, result
       callback.call(ctx.root,err,result,ctx) if callback
 
-    @baseRoute.dispatch ctx, (err) =>
-      return finish(err) if err
 
-      # Find a match from this router first
-      route = _.find @routes, (r) -> r.match(ctx.path, ctx.params)
+    # Find a match from this router first
+    route = _.find @routes, (r) -> r.match(ctx.path, ctx.params)
 
-      return route.dispatch ctx, finish if route
-
+    if route
+      route.dispatch(ctx, finish, fns)
+      return true
+    else
       router = _.find @routers, (router,base) ->
         router.match(ctx.path, ctx.params)
 
-      return router.dispatch ctx, finish if router
-
-      return @trigger('unhandled', ctx)
+      if router
+        return router.dispatch ctx, finish, fns
+      else
+        @trigger('unhandled', ctx)
+        return false
 
 
   # When called from the browser, this will dispatch to the route
