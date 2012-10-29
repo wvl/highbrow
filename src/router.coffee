@@ -52,7 +52,7 @@ class Route
     fns = fns.concat(@fns)
 
     next = (err,result) =>
-      return callback(err,result) if err or i==fns.length
+      return callback(err,result) if err or i==fns.length or ctx.finished
 
       fn = fns[i++]
       if fn.length >= 2

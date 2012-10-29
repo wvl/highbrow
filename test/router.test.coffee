@@ -211,6 +211,19 @@ describe "Mounted router", ->
     # profiles = router ':username', users.find
     # router().mount 'dashboard', 
 
+  it "show should allow halting early in chain", (done) ->
+    r = new Router()
+
+    user = r.mount '/user', (ctx,next) ->
+      ctx.finished = true
+      next()
+
+    user.page '/final', (ctx) ->
+      throw new Error("Should not be hit")
+
+    r.show '/user/final', (err, result, ctx) ->
+      e(ctx.finished).to.equal(true)
+      done()
 
 # describe "Router", ->
 #   it "should match a basic route", (done) ->
