@@ -1,4 +1,4 @@
-Backbone = require 'backbone'
+Backbone = require('./utils').Backbone
 _ = require 'underscore'
 
 # This is an extremely simple class for in process

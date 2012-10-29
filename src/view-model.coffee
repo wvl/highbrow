@@ -1,5 +1,5 @@
 ErrorModel = require './error-model'
-Backbone = require 'backbone'
+Backbone = require('./utils').Backbone
 moment = require 'moment'
 _ = require 'underscore'
 

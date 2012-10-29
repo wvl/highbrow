@@ -1,7 +1,7 @@
-Backbone = require 'backbone'
 _ = require 'underscore'
 utils    = require './utils'
 nct      = utils.nct
+Backbone = utils.Backbone
 require 'model_binder' if utils.browser
 
 # A single item view implementation that contains code for rendering

@@ -1,4 +1,4 @@
-Backbone = require 'backbone'
+Backbone = require('./utils').Backbone
 _        = require 'underscore'
 qs       = require './querystring'
 

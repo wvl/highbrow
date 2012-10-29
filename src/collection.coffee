@@ -1,4 +1,4 @@
-Backbone = require 'backbone'
+Backbone = require('./utils').Backbone
 
 class Collection extends Backbone.Collection
   setParent: (@parent) ->

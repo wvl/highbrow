@@ -1,8 +1,9 @@
 _ = require 'underscore'
 module.exports = base = {}
 
-base.Backbone = require 'backbone'
-base.nct = require 'nct'
+
+base.Backbone = if (typeof Backbone == 'undefined') then require 'backbone' else Backbone
+base.nct = if (typeof nct == 'undefined') then require 'nct' else nct
 
 # BindTo facilitates the binding and unbinding of events from objects that extend 
 # `Backbone.Events`. It makes unbinding events, even with anonymous callback 
@@ -38,7 +39,7 @@ _.underscored ?=  base.underscored
 base.browser = typeof window != 'undefined'
 base.server = !base.browser
 
-base.$ = undefined;
+base.$ = undefined
 
 # Use this function to set what Dom Library to use. This can be
 # cheerio on the server, and jquery (or equivalent) on the client.

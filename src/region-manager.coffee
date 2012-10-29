@@ -1,4 +1,4 @@
-Backbone = require 'backbone'
+Backbone = require('./utils').Backbone
 nct = require 'nct'
 
 class RegionManager extends Backbone.Events
