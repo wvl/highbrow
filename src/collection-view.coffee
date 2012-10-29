@@ -40,7 +40,7 @@ class CollectionView extends ItemView
 
   # Append the HTML to the collection's `el`. Override this method to do something other 
   # than `.append`.
-  appendHtml: (el, html) -> el.append(html)
+  appendHtml: (el, html) -> @$el.append(html)
 
   # TODO: rename appendHtml to addItemHtml
   addItemHtml: (el, html) -> @appendHtml(el, html)
@@ -55,5 +55,8 @@ class CollectionView extends ItemView
     super
     _.each @children, (childView) -> childView.close()
 
+  # Override for custom code on dom show
+  onShow: ->
+    _.each @children, (childView) -> childView.onShow()
 
 module.exports = CollectionView

@@ -24,7 +24,7 @@ class ItemView extends Backbone.View
     @namespace = @options.namespace if @options.namespace
     @namespace ?= @constructor.namespace
     @workflow ?= @options.workflow || {}
-    unless @template
+    if !@template and @template!=false
       throw new Error("Unknown template. Please provide a name or template") unless @name
       template = _.underscored(@name)
       @template = if @namespace then @namespace + '/' + template else template
@@ -138,6 +138,9 @@ class ItemView extends Backbone.View
   # Override for post render customization
   onRender: ->
     @initBindings() if @bindings
+
+  # Override for custom code on dom show
+  onShow: ->
 
   # Override for custom close code
   onClose: ->
