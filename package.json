@@ -30,7 +30,7 @@
   , "uglify-js": "*"
   }
 , "scripts":
-  { "test": "make prod && mocha test/*.test.coffee"
-  , "prepublish": "make prod"
+  { "test": "make dist && mocha test/*.test.coffee"
+  , "prepublish": "make dist"
   }
 }
