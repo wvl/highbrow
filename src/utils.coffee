@@ -47,6 +47,11 @@ base.setDomLibrary = (lib) ->
   base.Backbone.setDomLibrary(lib)
   base.$ = lib
 
+# possible multiple versions of highbrow need to reference the same
+# dom library. If that's the case, set the global `highbrowDomLibary`
+if typeof highbrowDomLibrary != 'undefined'
+  base.setDomLibrary(highbrowDomLibrary)
+
 # Because highbrow uses "convention over configuration", we need
 # a name associated with our views and models. The default extend
 # implementation used from javascript with backbone does not give
