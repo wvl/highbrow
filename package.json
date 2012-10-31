@@ -18,29 +18,19 @@
   , "underscore": "*"
   }
 , "devDependencies":
-  { "bcrypt": "*"
-  , "cheerio": "*"
-  , "commander": "*"
-  , "express": ">3.0.0beta4"
-  , "less": "*"
+  { "cheerio": "*"
+  , "express": "*"
   , "mkdirp": "*"
-  , "mongoose": "*"
-  , "passport": "*"
-  , "passport-local": "*"
-  , "up": "*"
-  , "urlify": "*"
   , "chai": "*"
   , "coffee-script": "*"
   , "mocha": "*"
   , "requirejs": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
-  , "sockjs": "*"
-  , "supertest": "*"
   , "uglify-js": "*"
   }
 , "scripts":
-  { "test": "mocha test/*.test.coffee"
+  { "test": "make prod && mocha test/*.test.coffee"
   , "prepublish": "make prod"
   }
 }
