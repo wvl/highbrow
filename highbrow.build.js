@@ -7,6 +7,14 @@
   , 'moment': { exports: 'moment' }
   , 'underscore': { exports: '_' }
   }
+, paths:
+  { 'backbone': 'empty:'
+  , 'jquery': 'empty:'
+  , 'nct': 'empty:'
+  , 'model_binder': 'empty:'
+  , 'moment': 'empty:'
+  , 'underscore': 'empty:'
+  }
 , dir: 'release'
 , packages: [
     {name: 'highbrow', location: 'highbrow', main: 'index'}
