@@ -2,7 +2,15 @@
 utils = require './utils'
 _     = require 'underscore'
 
-exports.installSync = (app) ->
+exports.installSync = (app, defaultRequest={}) ->
+  baseRequest =
+    connection:
+      encrypted: false
+    headers:
+      cookie: null
+    socket:
+      destroy: ->
+
   methodMap =
     create: 'post'
     update: 'put'
@@ -19,20 +27,15 @@ exports.installSync = (app) ->
     url ?= if _.isFunction(model.url) then model.url() else model.url
     # req = express.request
     # console.log('req: ', req)
-    req =
+
+    req = _.extend baseRequest, defaultRequest, {
       method: methodMap[method]
       url: url
-      connection:
-        encrypted: false
-      headers:
-        cookie: null
-      socket:
-        destroy: ->
+    }
 
     # Ensure that we have the appropriate request data.
     if (!options.data && model && (method == 'create' || method == 'update'))
       req.body = model.toJSON()
-
 
     res =
       send: (status, json) ->
