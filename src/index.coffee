@@ -36,7 +36,5 @@ base.handlers = require './handlers'
 base.setViewModels = (viewModels) ->
   base.ItemView.viewModels = viewModels
 
-# _.extend(base.Controller.prototype, Backbone.Events)
-# _.extend(base.Controller.prototype, base.BindTo)
 _.extend(base.ItemView.prototype, base.BindTo)
-# _.extend(base.CollectionView.prototype, base.BindTo)
+_.extend(base.Model.prototype, base.BindTo)

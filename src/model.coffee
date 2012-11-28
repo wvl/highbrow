@@ -41,6 +41,15 @@ class Model extends Backbone.Model
   # be included in the JSON.
   @embeddedRelations: {}
 
+  destroy: ->
+    @unbindAll()
+    _.each @constructor.embedded_relations, (constructor, key) =>
+      if this[key] instanceof Backbone.Collection
+        _.each this[key].toArray(), (model) -> model.destroy()
+      else
+        this[key].destroy()
+    super
+
   # Checks whether the model is valid or not.
   savable: ->
     return unless @validations
