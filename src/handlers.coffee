@@ -25,13 +25,11 @@ exports.installSync = (app, defaultRequest={}) ->
 
     url = options.url
     url ?= if _.isFunction(model.url) then model.url() else model.url
-    # req = express.request
-    # console.log('req: ', req)
 
-    req = _.extend baseRequest, defaultRequest, {
+    req = _.extend {}, baseRequest, defaultRequest, {
       method: methodMap[method]
       url: url
-    }
+    }, (options.context|| {})
 
     # Ensure that we have the appropriate request data.
     if (!options.data && model && (method == 'create' || method == 'update'))
@@ -44,12 +42,16 @@ exports.installSync = (app, defaultRequest={}) ->
           json = status
           status = 200
         if status==200
-          options.success(json)
+          # Mongoose decorates the object returned with all sorts of extra
+          # attributes that mess up backbone. Shortcut to strip that crap out.
+          options.success(JSON.parse(JSON.stringify(json)))
         else
           options.error({status, responseText: JSON.stringify(json)})
       end: (msg) ->
         options.error({status: 500, responseText: msg})
       setHeader: ->
 
-    # app.router req, res
-    app.handle req, res
+    # Call just the matching route, not all middleware
+    app.router req, res
+
+    # app.handle req, res

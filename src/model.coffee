@@ -1,11 +1,17 @@
-Backbone = require('./utils').Backbone
 _        = require 'underscore'
+utils    = require './utils'
+Backbone = utils.Backbone
 
 
 # Extend Backbone.Model with nested relationships. With this
 # base class, you can compose your models together.
 class Model extends Backbone.Model
   idAttribute: '_id'
+
+  @init: (context, params...) ->
+    model = new @(params...)
+    model.context = context
+    return model
 
   constructor: ->
     super
@@ -106,5 +112,11 @@ class Model extends Backbone.Model
       delete attrs[key] if attrs[key]
 
     super(attrs, options)
+
+  sync: (method, model, options) ->
+    if utils.server
+      options ?= {}
+      options.context = @context || {}
+    Backbone.sync.call(this, method, model, options)
 
 module.exports = Model
