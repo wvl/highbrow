@@ -56,9 +56,15 @@ class Route
 
       fn = fns[i++]
       if fn.length >= 2
-        fn.call(ctx.root, ctx, next)
+        try
+          fn.call(ctx.root, ctx, next)
+        catch err
+          return callback(err)
       else
-        next(null, fn.call(ctx.root, ctx))
+        try
+          next(null, fn.call(ctx.root, ctx))
+        catch err
+          return callback(err)
 
     next()
 
