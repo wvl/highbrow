@@ -96,7 +96,6 @@ class Route
     p = "(#{p.join('|')})" if p instanceof Array
     p += '/?'
     p = p.replace(/\/\(/g, '(?:/')
-    p = p.replace(/\+/g, '__plus__')
     p = p.replace /(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, (ign, slash, format, key, capture, optional) =>
       @keys.push({ name: key, optional: !! optional })
       slash = slash || ''
@@ -108,7 +107,6 @@ class Route
       result += ')' + (optional || '')
       result
     p = p.replace(/([\/.])/g, '\\$1')
-    p = p.replace(/__plus__/g, '(.+)')
     p = p.replace(/\*/g, '(.*)')
     return new RegExp('^' + p + '$', 'i')
 
