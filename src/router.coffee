@@ -257,8 +257,8 @@ class Router
       origin += ':' + location.port if location.port
       0 == href.indexOf(origin)
 
-    addEventListener 'popstate', onpopstate, false
-    addEventListener 'click', onclick, false
+    window.addEventListener 'popstate', onpopstate, false
+    window.addEventListener 'click', onclick, false
 
 _.extend(Router.prototype, Backbone.Events)
 
