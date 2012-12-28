@@ -51,7 +51,5 @@ exports.installSync = (app, defaultRequest={}) ->
         options.error({status: 500, responseText: msg})
       setHeader: ->
 
-    # Call just the matching route, not all middleware
-    app.router req, res
-
-    # app.handle req, res
+    # Call the matching route with middleware
+    app.handle req, res
