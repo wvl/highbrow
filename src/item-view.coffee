@@ -36,7 +36,7 @@ class ItemView extends Backbone.View
   #
   # When rendering a collection
   id: ->
-    id = 'view-'+(@template || _.underscored(@name || ''))
+    id = 'view-'+_.underscored(@template || @name || '').replace('/', '-')
     id = id+'-'+@model.id if @model and @model.id
     id
 
