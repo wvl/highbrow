@@ -26,7 +26,7 @@ Backbone = utils.Backbone
 # route function. Intermediate data can be
 # attached to the object as needed.
 class Context
-  constructor: (@path, @state={}, @root) ->
+  constructor: (@path, @state={}, @root, @callback) ->
     @params = []
     @canonicalPath = @path
     i = @path.indexOf('?')
@@ -161,14 +161,20 @@ class Router
       callback = state
       state = {}
 
+    if state instanceof Context
+      state.redirecting = true
+      callback ?= state.callback
 
-    @dispatch(new Context(path, state, @), callback)
+    ctx = new Context(path, state, @, callback)
+    @dispatch(ctx, callback || ctx.callback)
 
   dispatch: (ctx, callback, fns=[]) ->
     @trigger 'start', ctx
     fns.push(@baseRouteDispatch)
 
     finish = (err, result) =>
+      return if ctx.redirecting
+
       if err
         @trigger 'error', err, ctx, result
       else
@@ -207,7 +213,7 @@ class Router
 
   # Replace `path` with optional `state` object
   replace: (path, state, init, callback) ->
-    ctx = new Context(path, state, @)
+    ctx = new Context(path, state, @, callback)
     ctx.replace = true
     ctx.init = init
     @dispatch ctx, callback

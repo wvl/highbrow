@@ -228,8 +228,38 @@ describe "Mounted router", ->
       throw new Error("Should not be hit")
 
     r.show '/user/final', (err, result, ctx) ->
-      e(ctx.finished).to.equal(true)
+      e(err).to.not.exist
       done()
+
+  it "should allow redirecting", (done) ->
+    r = new Router()
+    r.page '/first', (ctx) ->
+      return this.show '/second', ctx
+    r.page '/second', (ctx) ->
+      return "DONE"
+    r.on 'show', (err, result, ctx) ->
+      console.log 'show', result
+    r.show '/first', (err, result, ctx) ->
+      # console.log('result?',err,result,ctx)
+      e(err).to.not.exist
+      e(result).to.equal('DONE')
+      done()
+
+  it "show should allow redirecting from mounted router", (done) ->
+    r = new Router()
+    user = r.mount '/user', (ctx, next) ->
+      return this.show '/second', ctx
+
+    user.page '', done # should not be hit
+
+    r.page '/second', (ctx) ->
+      return 'DONE'
+
+    r.show '/user', (err, result, ctx) ->
+      e(err).to.not.exist
+      e(result).to.equal('DONE')
+      done()
+
 
 # describe "Router", ->
 #   it "should match a basic route", (done) ->
