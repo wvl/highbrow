@@ -1,6 +1,7 @@
-Backbone = require('./utils').Backbone
 _        = require 'underscore'
 qs       = require './querystring'
+utils    = require('./utils')
+Backbone = utils.Backbone
 
 # The highbrow router is heavily inspired by page.js:
 # http://visionmedia.github.com/page.js/
@@ -55,6 +56,9 @@ class Route
       return callback(err,result) if err or i==fns.length or ctx.finished
 
       fn = fns[i++]
+
+      return callback(new Error("Unknown route function")) unless fn
+
       if fn.length >= 2
         try
           fn.call(ctx.root, ctx, next)
@@ -144,6 +148,12 @@ class Router
   page: (path, fns...) ->
     @routes.push new Route(@base+path, fns...)
     @
+
+  browser: (path, fns...) ->
+    fns.unshift (ctx,next) ->
+      ctx.finished = utils.server
+      next()
+    @page path, fns...
 
   # Route to the given path, with an optional state and callback
   show: (path, state, callback) ->

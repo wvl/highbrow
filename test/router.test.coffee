@@ -87,6 +87,12 @@ describe "Router", ->
 
     e(r.show('/unhandled')).to.be.false
 
+  it "should skip routes with `browser` route", (done) ->
+    r = new Router()
+    r.browser '/skipping', (ctx) ->
+      throw new Error("should not be reached")
+    r.show '/skipping', -> done()
+
   describe "querystring", ->
     it "should have an empty querystring", (done) ->
       r = new Router()
