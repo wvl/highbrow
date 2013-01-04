@@ -272,7 +272,7 @@ class Router
       0 == href.indexOf(origin)
 
     window.addEventListener 'popstate', onpopstate, false
-    window.addEventListener 'click', onclick, false
+    utils.$(window).bind('click', onclick)
 
 _.extend(Router.prototype, Backbone.Events)
 
