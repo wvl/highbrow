@@ -23,4 +23,11 @@ class Collection extends utils.Backbone.Collection
       options.context = @context || {}
     utils.Backbone.sync.call(this, method, model, options)
 
+  fetchAndContinue: (next) ->
+    this.fetch({
+      success: -> next()
+      error: (model,response) ->
+        next(response)
+    })
+
 module.exports = Collection
