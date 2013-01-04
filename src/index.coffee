@@ -30,6 +30,7 @@ base.Application    = require './application'
 
 # [Router](router.html)
 base.Router         = require('./router')
+base.querystring    = require('./querystring')
 
 base.handlers = require './handlers'
 
