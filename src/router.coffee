@@ -32,7 +32,7 @@ class Context
     i = @path.indexOf('?')
     @querystring = if ~i then @path.slice(i+1) else ''
     @path = @path.slice(0,i) if ~i
-    @state.path = @path
+    @state.path = @canonicalPath
 
   query: (key) ->
     obj = qs.parse(@querystring)
