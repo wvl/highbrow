@@ -237,10 +237,7 @@ describe "Mounted router", ->
       return this.show '/second', ctx
     r.page '/second', (ctx) ->
       return "DONE"
-    r.on 'show', (err, result, ctx) ->
-      console.log 'show', result
     r.show '/first', (err, result, ctx) ->
-      # console.log('result?',err,result,ctx)
       e(err).to.not.exist
       e(result).to.equal('DONE')
       done()
@@ -257,10 +254,26 @@ describe "Mounted router", ->
 
     r.show '/user', (err, result, ctx) ->
       e(err).to.not.exist
+      e(ctx.state.redirecting).to.equal(true)
+      e(ctx.state.path).to.equal('/second')
       e(result).to.equal('DONE')
       done()
 
+  it "should allow redirecting from the end route", (done) ->
+    r = new Router()
+    user = r.mount '/user', (ctx, next) ->
+      next()
 
-# describe "Router", ->
-#   it "should match a basic route", (done) ->
-#     router().page('/',done).show('/')
+    user.page '', (ctx) ->
+      return this.show '/second', ctx
+
+    r.page '/second', (ctx) ->
+      return 'DONE'
+
+    r.show '/user', (err, result, ctx) ->
+      console.log("route")
+      e(err).to.not.exist
+      e(ctx.state.redirecting).to.equal(true)
+      e(ctx.state.path).to.equal('/second')
+      e(result).to.equal('DONE')
+      done()

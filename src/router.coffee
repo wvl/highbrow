@@ -164,6 +164,7 @@ class Router
     if state instanceof Context
       state.redirecting = true
       callback ?= state.callback
+      state = {redirecting: true}
 
     ctx = new Context(path, state, @, callback)
     @dispatch(ctx, callback || ctx.callback)
