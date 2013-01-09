@@ -18,6 +18,9 @@ class CollectionView extends ItemView
 
   models: -> @collection.models
 
+  view: ->
+    if @collection.pageInfo then @collection.pageInfo() else {}
+
   # Loop through all of the items and render each of them with the specified `itemView`.
   render: ->
     @renderTemplate()

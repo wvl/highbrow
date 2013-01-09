@@ -12,6 +12,8 @@ module.exports = base = require './utils'
 base.Model          = require './model'
 # [Collection](collection.html)
 base.Collection     = require './collection'
+# [PaginatedCollection](paginated-collection.html)
+base.PaginatedCollection = require './paginated-collection'
 # [ViewModel](view-model.html)
 base.ViewModel      = require './view-model'
 # [ItemView](item-view.html)

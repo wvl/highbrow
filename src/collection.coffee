@@ -1,4 +1,4 @@
-utils = require('./utils')
+utils = require './utils'
 
 class Collection extends utils.Backbone.Collection
   setParent: (@parent) ->
