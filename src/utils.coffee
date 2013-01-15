@@ -66,8 +66,11 @@ if typeof highbrowDomLibrary != 'undefined'
 # class User extends highbrow.Model
 #
 base.extend = (cls,name,protoProps,classProps) ->
-  throw new Error("Unknown base class "+cls) unless base[cls]
-  newcls = base[cls].extend(protoProps, classProps)
+  if typeof cls == 'string'
+    throw new Error("Unknown base class "+cls) unless base[cls]
+    newcls = base[cls].extend(protoProps, classProps)
+  else
+    newcls = cls.extend(protoProps, classProps)
   newcls::name = name
   newcls
 
