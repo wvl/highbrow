@@ -1,4 +1,3 @@
-_ = require 'underscore'
 
 class ErrorModel
   constructor: (@error,@model) ->
@@ -15,5 +14,3 @@ class ErrorModel
 
       @[err.field+'_message'] = messages[err.code] if messages[err.code]
       @[err.field+'_message'] = err.message if err.message
-
-module.exports = ErrorModel

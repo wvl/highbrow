@@ -1,9 +1,5 @@
-_ = require 'underscore'
-module.exports = base = {}
-
-
-base.Backbone = if (typeof Backbone == 'undefined') then require 'backbone' else Backbone
-base.nct = if (typeof nct == 'undefined') then require 'nct' else nct
+highbrow.Backbone = Backbone
+highbrow.nct = nct
 
 # BindTo facilitates the binding and unbinding of events from objects that extend 
 # `Backbone.Events`. It makes unbinding events, even with anonymous callback 
@@ -11,7 +7,7 @@ base.nct = if (typeof nct == 'undefined') then require 'nct' else nct
 #
 # Thanks to Johnny Oshika for this code.
 # http://stackoverflow.com/questions/7567404/backbone-js-repopulate-or-recreate-the-view/7607853#7607853
-base.BindTo =
+highbrow.BindTo =
   # Store the event binding in array so it can be unbound easily, at a later point in time.
   bindTo: (obj, eventName, callback, context) ->
     context = context || this
@@ -28,29 +24,29 @@ base.BindTo =
 #
 # Using "Convention over Configuration" to lookup templates, using
 # `underscored` versions of the view's name:
-base.underscored = (str) ->
+highbrow.underscored = (str) ->
   str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
-_.underscored ?=  base.underscored
+_.underscored ?=  highbrow.underscored
 
 
 
 #
 # Accessible variables to determine what environment we're running in.
-base.browser = typeof window != 'undefined'
-base.server = !base.browser
+highbrow.browser = typeof window != 'undefined'
+highbrow.server = !highbrow.browser
 
-base.$ = undefined
+highbrow.$ = undefined
 
 # Use this function to set what Dom Library to use. This can be
 # cheerio on the server, and jquery (or equivalent) on the client.
-base.setDomLibrary = (lib) ->
-  base.Backbone.setDomLibrary(lib)
-  base.$ = lib
+highbrow.setDomLibrary = (lib) ->
+  highbrow.Backbone.setDomLibrary(lib)
+  highbrow.$ = lib
 
 # possible multiple versions of highbrow need to reference the same
 # dom library. If that's the case, set the global `highbrowDomLibary`
 if typeof highbrowDomLibrary != 'undefined'
-  base.setDomLibrary(highbrowDomLibrary)
+  highbrow.setDomLibrary(highbrowDomLibrary)
 
 # Because highbrow uses "convention over configuration", we need
 # a name associated with our views and models. The default extend
@@ -65,10 +61,10 @@ if typeof highbrowDomLibrary != 'undefined'
 #
 # class User extends highbrow.Model
 #
-base.extend = (cls,name,protoProps,classProps) ->
+highbrow.extend = (cls,name,protoProps,classProps) ->
   if typeof cls == 'string'
-    throw new Error("Unknown base class "+cls) unless base[cls]
-    newcls = base[cls].extend(protoProps, classProps)
+    throw new Error("Unknown highbrow class "+cls) unless highbrow[cls]
+    newcls = highbrow[cls].extend(protoProps, classProps)
   else
     newcls = cls.extend(protoProps, classProps)
   newcls::name = name

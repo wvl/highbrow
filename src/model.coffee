@@ -1,7 +1,3 @@
-_        = require 'underscore'
-utils    = require './utils'
-Backbone = utils.Backbone
-
 
 # Extend Backbone.Model with nested relationships. With this
 # base class, you can compose your models together.
@@ -114,7 +110,7 @@ class Model extends Backbone.Model
     super(attrs, options)
 
   sync: (method, model, options) ->
-    if utils.server
+    if highbrow.server
       options ?= {}
       options.context = @context || {}
     Backbone.sync.call(this, method, model, options)
@@ -125,5 +121,3 @@ class Model extends Backbone.Model
       error: (model,response) ->
         next(response)
     })
-
-module.exports = Model

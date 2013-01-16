@@ -1,6 +1,3 @@
-Backbone = require('./utils').Backbone
-nct = require 'nct'
-
 class RegionManager extends Backbone.Events
   constructor: (@$el, @options={}) ->
     throw new Error("An 'el' must be specified") unless @$el

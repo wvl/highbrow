@@ -1,8 +1,4 @@
-
-utils = require './utils'
-_     = require 'underscore'
-
-exports.installSync = (app, defaultRequest={}) ->
+highbrow.installSync = (app, defaultRequest={}) ->
   baseRequest =
     connection:
       encrypted: false
@@ -17,7 +13,7 @@ exports.installSync = (app, defaultRequest={}) ->
     delete: 'delete'
     read:   'get'
 
-  utils.Backbone.sync = (method, model, options) ->
+  highbrow.Backbone.sync = (method, model, options) ->
     # console.log("Sync called", method, model, options)
     timeout = setTimeout (->
       options.error("Server Backbone.sync timeout")

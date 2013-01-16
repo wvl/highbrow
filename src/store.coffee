@@ -1,6 +1,3 @@
-Backbone = require('./utils').Backbone
-_ = require 'underscore'
-
 # This is an extremely simple class for in process
 # state management. Rather than relying on global
 # variables, store is available from the application,

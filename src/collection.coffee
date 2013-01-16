@@ -1,6 +1,5 @@
-utils = require './utils'
 
-class Collection extends utils.Backbone.Collection
+class Collection extends highbrow.Backbone.Collection
   setParent: (@parent) ->
 
   @init: (context, params...) ->
@@ -18,10 +17,10 @@ class Collection extends utils.Backbone.Collection
     @urlRoot.replace(":parent", @parent?.url())
 
   sync: (method, model, options) ->
-    if utils.server
+    if highbrow.server
       options ?= {}
       options.context = @context || {}
-    utils.Backbone.sync.call(this, method, model, options)
+    highbrow.Backbone.sync.call(this, method, model, options)
 
   fetchAndContinue: (next) ->
     this.fetch({
@@ -29,5 +28,3 @@ class Collection extends utils.Backbone.Collection
       error: (model,response) ->
         next(response)
     })
-
-module.exports = Collection

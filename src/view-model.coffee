@@ -1,8 +1,3 @@
-ErrorModel = require './error-model'
-Backbone = require('./utils').Backbone
-moment = require 'moment'
-_ = require 'underscore'
-
 class ViewModel
   constructor: (@model, error) ->
     @error = new ErrorModel(error,@model) if error
@@ -64,4 +59,3 @@ class ViewModel
     if _.has(@attrs,attr) then @attrs[attr] else @model.get(attr)
 
 ViewModel.extend = Backbone.View.extend
-module.exports = ViewModel

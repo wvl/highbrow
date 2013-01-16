@@ -1,7 +1,7 @@
 { "name": "highbrow"
-, "version": "0.0.21"
+, "version": "0.1.0"
 , "description": "A Backbone Base Framework"
-, "main": "lib"
+, "main": "lib/highbrow.js"
 , "repository":
   { "type": "git"
   , "url": "https://github.com/wvl/highbrow.git"
@@ -24,13 +24,12 @@
   , "chai": "*"
   , "coffee-script": "*"
   , "mocha": "*"
-  , "requirejs": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
   , "uglify-js": "*"
   }
 , "scripts":
-  { "test": "make dist && mocha test/*.test.coffee"
-  , "prepublish": "make dist"
+  { "test": "make all && mocha test/*.test.coffee"
+  , "prepublish": "make all"
   }
 }

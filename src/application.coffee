@@ -1,10 +1,4 @@
 
-_ = require 'underscore'
-utils = require './utils'
-Router = require './router'
-Store = require './store'
-nct = require 'nct'
-
 #
 # Highbrow Application Base class
 #
@@ -17,7 +11,7 @@ nct = require 'nct'
 #
 # @param {$el} Jquery (or equivalent) DOM element 
 #
-module.exports = class Application extends Router
+class Application extends Router
 
   # The dom element should be passed into the constructor.
   constructor: (options={}, fns...) ->
@@ -53,7 +47,7 @@ module.exports = class Application extends Router
     else
       @close()
       @$el.html nct.render template if template
-      @$el.attr('data-ssr', 'true') if utils.server
+      @$el.attr('data-ssr', 'true') if highbrow.server
     _.each sections, (fn, sel) => @display(fn.call(@), sel)
 
   # Displays a backbone view instance inside of the main region.
@@ -67,7 +61,7 @@ module.exports = class Application extends Router
     @_views[selector] = view
     el = @$el.find(selector)
     view.render()
-    if utils.browser
+    if highbrow.browser
       if el.data('ssr')
         el.data('ssr', false)
       else
@@ -75,4 +69,4 @@ module.exports = class Application extends Router
     else
       el.html view.$el
       el.attr('data-ssr', 'true')
-    view.onShow() if view.onShow and utils.browser
+    view.onShow() if view.onShow and highbrow.browser

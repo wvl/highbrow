@@ -1,5 +1,7 @@
 # Import from https://github.com/visionmedia/node-querystring
 `
+highbrow.querystring = {};
+
 /**
  * Object#toString() ref for stringify().
  */
@@ -121,7 +123,7 @@ function parseString(str){
  * @api public
  */
 
-exports.parse = function(str){
+highbrow.querystring.parse = function(str){
   if (null == str || '' == str) return {};
   return 'object' == typeof str
     ? parseObject(str)
@@ -136,7 +138,7 @@ exports.parse = function(str){
  * @api public
  */
 
-var stringify = exports.stringify = function(obj, prefix) {
+var stringify = highbrow.querystring.stringify = function(obj, prefix) {
   if (Array.isArray(obj)) {
     return stringifyArray(obj, prefix);
   } else if ('[object Object]' == toString.call(obj)) {

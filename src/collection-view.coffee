@@ -1,7 +1,3 @@
-
-_ = require 'underscore'
-ItemView = require './item-view'
-
 # A view that iterates over a Collection and renders an individual ItemView for each model.
 class CollectionView extends ItemView
   constructor: ->
@@ -62,4 +58,3 @@ class CollectionView extends ItemView
   onShow: ->
     _.each @children, (childView) -> childView.onShow()
 
-module.exports = CollectionView

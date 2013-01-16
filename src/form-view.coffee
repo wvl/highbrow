@@ -1,6 +1,3 @@
-ItemView = require './item-view'
-_ = require 'underscore'
-
 # The default FormView class that can be
 # used as a base class.
 #
@@ -86,5 +83,3 @@ FormViewMixin =
       @model.save({}, callbacks)
 
 _.extend FormView.prototype, FormViewMixin
-
-module.exports = {FormView, FormViewMixin}

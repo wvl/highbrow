@@ -1,5 +1,6 @@
-
-Router = require '../lib/router'
+_ = require 'underscore'
+highbrow = require '../lib/highbrow'
+Router = highbrow.Router
 e = require('chai').expect
 
 # route = (path, fns...) -> new Route(path, fns...)

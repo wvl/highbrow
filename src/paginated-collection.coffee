@@ -1,6 +1,3 @@
-Collection = require './collection'
-utils = require './utils'
-
 class PaginatedCollection extends Collection
   initialize: (options={}) ->
     @page = options.page or 1
@@ -15,7 +12,7 @@ class PaginatedCollection extends Collection
     return resp.models
 
   queryParams: ->
-    utils.querystring.stringify {@page,@perPage}
+    highbrow.querystring.stringify {@page,@perPage}
 
   url: ->
     @urlRoot.replace(':parent', @parent?.url()) + '?' + @queryParams()
@@ -45,5 +42,3 @@ class PaginatedCollection extends Collection
     return false unless @pageInfo().prev
     @page -= 1
     @fetch()
-
-module.exports = PaginatedCollection

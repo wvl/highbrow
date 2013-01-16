@@ -1,7 +1,3 @@
-_        = require 'underscore'
-qs       = require './querystring'
-utils    = require('./utils')
-Backbone = utils.Backbone
 
 # The highbrow router is heavily inspired by page.js:
 # http://visionmedia.github.com/page.js/
@@ -35,7 +31,7 @@ class Context
     @state.path = @canonicalPath
 
   query: (key) ->
-    obj = qs.parse(@querystring)
+    obj = highbrow.querystring.parse(@querystring)
     if key then obj[key] else obj
 
 
@@ -151,7 +147,7 @@ class Router
 
   browser: (path, fns...) ->
     fns.unshift (ctx,next) ->
-      ctx.finished = utils.server
+      ctx.finished = highbrow.server
       next()
     @page path, fns...
 
@@ -273,9 +269,7 @@ class Router
       0 == href.indexOf(origin)
 
     window.addEventListener 'popstate', onpopstate, false
-    utils.$(window).bind('click', onclick)
+    highbrow.$(window).bind('click', onclick)
 
 _.extend(Router.prototype, Backbone.Events)
-
-module.exports = Router
 
