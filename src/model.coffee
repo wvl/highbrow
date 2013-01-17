@@ -85,6 +85,7 @@ class Model extends Backbone.Model
         @[key] = attrs[key]
         @[key].setParent(@) if @[key]?.setParent
       else
+        throw new Error("Unknown relation: #{key}") unless constructor
         @[key] ?= new constructor()
         @[key].setParent(@) if @[key]?.setParent
 
