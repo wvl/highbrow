@@ -6,7 +6,7 @@
 # The store extends Backbone.Events, and can be listened
 # on for event changes, and used as an application wide
 # notification bus.
-module.exports = class Store
+class Store
   setIn: (bucket, name, value) ->
     @[bucket] ?= {}
     @[bucket][name] = value
