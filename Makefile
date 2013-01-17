@@ -7,12 +7,12 @@ SRC := $(SRC:%=src/%.coffee)
 dist/_base.js: $(SRC)
 	$(BINDIR)/coffee -j -b -c -p $(SRC) > dist/_base.js
 
-dist/highbrow.js: dist/_base.js dist/header-browser.js
-	cat dist/header-browser.js dist/_base.js > dist/highbrow.js
+dist/highbrow.js: dist/_base.js src/header-browser.js
+	cat src/header-browser.js dist/_base.js > dist/highbrow.js
 
-lib/highbrow.js: dist/_base.js dist/header-node.js src/handlers.coffee
+lib/highbrow.js: dist/_base.js src/header-node.js src/handlers.coffee
 	$(BINDIR)/coffee -b -c -p src/handlers.coffee > dist/_handlers.js
-	cat dist/header-node.js dist/_base.js dist/_handlers.js > lib/highbrow.js
+	cat src/header-node.js dist/_base.js dist/_handlers.js > lib/highbrow.js
 
 dist: dist/highbrow.js
 

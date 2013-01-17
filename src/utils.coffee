@@ -1,6 +1,3 @@
-highbrow.Backbone = Backbone
-highbrow.nct = nct
-
 # BindTo facilitates the binding and unbinding of events from objects that extend 
 # `Backbone.Events`. It makes unbinding events, even with anonymous callback 
 # functions, easy.
@@ -28,14 +25,10 @@ highbrow.underscored = (str) ->
   str.replace(/([a-z\d])([A-Z]+)/g, '$1_$2').replace(/\-|\s+/g, '_').toLowerCase()
 _.underscored ?=  highbrow.underscored
 
-
-
 #
 # Accessible variables to determine what environment we're running in.
 highbrow.browser = typeof window != 'undefined'
 highbrow.server = !highbrow.browser
-
-highbrow.$ = undefined
 
 # Use this function to set what Dom Library to use. This can be
 # cheerio on the server, and jquery (or equivalent) on the client.
