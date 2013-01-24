@@ -12,7 +12,7 @@ class ViewModel
     if attr is undefined or attr is null then "" else attr
 
   isNew: -> @model.isNew()
-  id: -> @model.get('_id') || @model.cid
+  id: -> @model.id || @model.cid
 
   @attrs: (list) ->
     list.forEach (attr) =>
