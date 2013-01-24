@@ -21,8 +21,10 @@ lib: lib/highbrow.js
 all: lib dist
 
 clean:
-	rm dist/highbrow.js
-	rm lib/highbrow.js
+	rm -f dist/_base.js
+	rm -f dist/_handlers.js
+	rm -f dist/highbrow.js
+	rm -f lib/highbrow.js
 
 docco:
 	docco src/*.coffee
