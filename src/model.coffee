@@ -66,7 +66,7 @@ class Model extends Backbone.Model
   toJSON: (sub) ->
     obj = super()
     _.each @constructor.relations, (constructor, key) =>
-      obj[key] = if @[key]?.get then @[key].get('_id') else @[key]
+      obj[key] = if @[key] instanceof Backbone.Model then @[key].id else undefined
     _.each @constructor.embedded_relations, (constructor, key) =>
       obj[key] = if @[key]?.toJSON then @[key].toJSON(true) else @[key]
     delete obj._id unless sub
