@@ -69,7 +69,6 @@ class Model extends Backbone.Model
       obj[key] = if @[key] instanceof Backbone.Model then @[key].id else undefined
     _.each @constructor.embedded_relations, (constructor, key) =>
       obj[key] = if @[key]?.toJSON then @[key].toJSON(true) else @[key]
-    delete obj._id unless sub
     obj
 
   setParent: (@parent) ->
