@@ -110,6 +110,26 @@ class Route
     p = p.replace(/\*/g, '(.*)')
     return new RegExp('^' + p + '$', 'i')
 
+  unload: (fns...) ->
+    @unloadHandlers = fns
+
+  close: (ctx, callback) ->
+    return callback() unless @unloadHandlers
+    i = 0
+    next = (err) =>
+      return callback(err) if err
+      return callback() if i==@unloadHandlers.length
+
+      fn = @unloadHandlers[i++]
+      return callback(new Error("Unknown unload handler")) unless fn
+      try
+        fn.call(ctx.root, ctx, next)
+      catch err
+        ctx.root.trigger 'error', err, ctx
+        return callback(err)
+
+    next()
+
 
 #
 # This is the entry point to highbrow's router.
@@ -131,6 +151,7 @@ class Router
     @running = false
     @routes = []
     @routers = {}
+    @currentRoute = false
     @baseRoute = new Route(@base+'/*', fns...)
     @baseRouteDispatch = _.bind(@baseRoute.dispatch, @baseRoute)
 
@@ -142,8 +163,9 @@ class Router
   # The path can contain:
   # page('/user/:user', load, show) // parameters
   page: (path, fns...) ->
-    @routes.push new Route(@base+path, fns...)
-    @
+    route = new Route(@base+path, fns...)
+    @routes.push route
+    route
 
   browser: (path, fns...) ->
     fns.unshift (ctx,next) ->
@@ -183,7 +205,12 @@ class Router
     route = _.find @routes, (r) -> r.match(ctx.path, ctx.params)
 
     if route
-      route.dispatch(ctx, finish, fns)
+      if ctx.root.currentRoute
+        ctx.root.currentRoute.route.close ctx.root.currentRoute.ctx, ->
+          route.dispatch(ctx, finish, fns)
+      else
+        route.dispatch(ctx, finish, fns)
+      ctx.root.currentRoute = {route,ctx} # if highbrow.browser
       return true
     else
       router = _.find @routers, (router,base) ->

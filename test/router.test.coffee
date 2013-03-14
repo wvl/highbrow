@@ -27,10 +27,13 @@ describe "Router", ->
     setTimeout next, 1
 
   it "should invoke a callback", (done) ->
-    e(new Router().page('/', -> done()).show('/')).to.be.true
+    r = new Router()
+    r.page '/', -> done()
+    e(r.show('/')).to.be.true
 
   it "should populate ctx.params", (done) ->
-    r = new Router().page '/post/:slug', (ctx) ->
+    r = new Router()
+    r.page '/post/:slug', (ctx) ->
       e(ctx.params.slug).to.equal 'one'
       done()
     e(r.show('/post/one')).to.be.true
@@ -52,7 +55,8 @@ describe "Router", ->
     r.show '/say'
 
   it "should invoke multiple callbacks", (done) ->
-    r = new Router().page '/multiple', first, (ctx) ->
+    r = new Router()
+    r.page '/multiple', first, (ctx) ->
       e(ctx.first).to.equal true
       ctx.first = false
 
@@ -64,7 +68,8 @@ describe "Router", ->
     e(r.show('/multiple')).to.be.true
 
   it "show should also return callback", (done) ->
-    r = new Router().page '/multiple', first, ->
+    r = new Router()
+    r.page '/multiple', first, ->
     r.show '/multiple', done
 
   it "should not follow the chain when error returned", (done) ->
@@ -93,6 +98,24 @@ describe "Router", ->
     r.browser '/skipping', (ctx) ->
       throw new Error("should not be reached")
     r.show '/skipping', -> done()
+
+  it "should allow specifying an unload handler", (done) ->
+    r = new Router()
+    handled = false
+    test = (ctx) ->
+      ctx.handled = handled = true
+
+    unloadHandler = (ctx, next) ->
+      e(ctx.handled).to.be.true
+      handled = 'unloaded'
+      next()
+
+    r.page('/test', test).unload  unloadHandler
+    r.page '/another', ->
+    r.show '/test'
+    r.show '/another', ->
+      e(handled).to.equal 'unloaded'
+      done()
 
   describe "querystring", ->
     it "should have an empty querystring", (done) ->
@@ -167,6 +190,34 @@ describe "Mounted router", ->
       done()
 
     e(routed).to.be.true
+
+  it "nested routers with unload handler", (done) ->
+    r = new Router()
+    unloaded = false
+    r.page '/blah', (ctx) ->
+    user = r.mount '/user', (ctx, next) ->
+      ctx.info = 'user'
+      next()
+    user.page('/show', (ctx) ->
+      e(ctx.info).to.equal 'user'
+      ctx.info = 'show'
+    ).unload (ctx,cb) ->
+      e(ctx.info).to.equal 'show'
+      unloaded = true
+      cb()
+
+    e(r.show('/blah')).to.be.true
+    e(unloaded).to.be.false
+    e(r.show('/user/show')).to.be.true
+    e(unloaded).to.be.false
+    r.show '/blah', (err) ->
+      e(unloaded).to.be.true
+      done()
+    #, (err) ->
+    #  console.log("ERr?", err)
+    #  e(err).to.not.exist
+    #  e(unloaded).to.be.true
+    #  done()
 
   it "show should return false if not matched", ->
     r = new Router()
