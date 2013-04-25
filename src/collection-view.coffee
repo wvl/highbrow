@@ -7,7 +7,7 @@ class CollectionView extends ItemView
     @bindTo @collection, "add", (model, collection, options) =>
       view = @addChildView(model,options.index)
       view.render()
-      @addItemHtml(@$el, view.$el)
+      @addItemHtml(@$el, view.$el, model)
       @onAdded(view.$el) if @onAdded
     @bindTo @collection, "remove", (item) => @removeChildView(item)
     @bindTo @collection, "reset", => @render()
