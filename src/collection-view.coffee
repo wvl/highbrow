@@ -7,7 +7,7 @@ class CollectionView extends ItemView
     @bindTo @collection, "add", (model, collection, options) =>
       view = @addChildView(model,options.index)
       view.render()
-      @addItemHtml(@$el, view.$el)
+      @addItemHtml(@$el, view.$el, model)
       @onAdded(view.$el) if @onAdded
     @bindTo @collection, "remove", (item) => @removeChildView(item)
     @bindTo @collection, "reset", => @render()
@@ -22,7 +22,7 @@ class CollectionView extends ItemView
     @renderTemplate()
     _.each @models(), (model, index) =>
       view = @addChildView(model,index).render()
-      @appendHtml(@$el, view.$el)
+      @appendHtml(@$el, view.$el, model)
     @onRender()
     @
 
@@ -39,10 +39,10 @@ class CollectionView extends ItemView
 
   # Append the HTML to the collection's `el`. Override this method to do something other 
   # than `.append`.
-  appendHtml: (el, html) -> @$el.append(html)
+  appendHtml: (el, html, model) -> @$el.append(html)
 
   # TODO: rename appendHtml to addItemHtml
-  addItemHtml: (el, html) -> @appendHtml(el, html)
+  addItemHtml: (el, html, model) -> @appendHtml(el, html, model)
 
   # Store references to all of the child `itemView`
   # instances so they can be managed and cleaned up, later.
