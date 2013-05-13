@@ -4,12 +4,16 @@
 class Model extends Backbone.Model
   idAttribute: '_id'
 
-  @init: (context, params...) ->
-    model = new @(params...)
-    model.context = context
+  @init: (context, attributes, options) ->
+    options ?= {}
+    options.context = context
+    model = new @(attributes, options)
     return model
 
-  constructor: ->
+  constructor: (attributes, options) ->
+    if options
+      @context ?= options.context
+      @parent ?= options.parent
     super
     @name ?= @constructor.name
 
@@ -80,13 +84,14 @@ class Model extends Backbone.Model
       if attrs[key] instanceof Backbone.Collection
         @[key] = attrs[key]
         @[key].setParent(@) if @[key]?.setParent
+        @[key].context = @context if @context
       else if attrs[key] instanceof Backbone.Model
         @[key] = attrs[key]
         @[key].setParent(@) if @[key]?.setParent
+        @[key].context = @context if @context
       else
         throw new Error("Unknown relation: #{key}") unless constructor
-        @[key] ?= new constructor()
-        @[key].setParent(@) if @[key]?.setParent
+        @[key] ?= new constructor(null, {@context, parent: @})
 
         if attrs[key]
           if _.isString(attrs[key])
@@ -112,7 +117,7 @@ class Model extends Backbone.Model
   sync: (method, model, options) ->
     if highbrow.server
       options ?= {}
-      options.context = @context || {}
+      options.context = @context || @parent?.context || {}
     Backbone.sync.call(this, method, model, options)
 
   fetchAndContinue: (next) ->

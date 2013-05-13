@@ -2,14 +2,23 @@
 class Collection extends highbrow.Backbone.Collection
   setParent: (@parent) ->
 
-  @init: (context, params...) ->
-    coll = new @(params...)
-    coll.context = context
+  @init: (context, models, options) ->
+    options ?= {}
+    options.context = context
+    coll = new @(models, options)
     return coll
 
-  initialize: (options={}) ->
-    @url = options.url if options.url
-    @context = options.context if options.context
+  constructor: (models, options) ->
+    if options
+      @context ?= options.context
+      @parent ?= options.parent
+      @url ?= options.url
+    super
+
+  add: (models, options) ->
+    if @context
+      models = if _.isArray(models) then models.slice() else [models]
+      _.each models, (file) => file.context = @context
     super
 
   url: ->
