@@ -33,7 +33,10 @@ highbrow.server = !highbrow.browser
 # Use this function to set what Dom Library to use. This can be
 # cheerio on the server, and jquery (or equivalent) on the client.
 highbrow.setDomLibrary = (lib) ->
-  highbrow.Backbone.setDomLibrary(lib)
+  if highbrow.Backbone.setDomLibrary
+    highbrow.Backbone.setDomLibrary(lib)
+  else
+    highbrow.Backbone.$ = lib
   highbrow.$ = lib
 
 # possible multiple versions of highbrow need to reference the same
