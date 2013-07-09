@@ -93,6 +93,19 @@ describe "Router", ->
 
     e(r.show('/unhandled')).to.be.false
 
+  it "should emit unhandled if no matching routes with nested routers", (done) ->
+    r = new Router()
+    r.on 'unhandled', (ctx) ->
+      e(ctx.path).to.equal '/user/unhandled'
+      done()
+    users = r.mount('/user')
+    users.page '/show', (ctx) ->
+    users.on 'unhandled', (ctx) ->
+      done('should not emit unhandled here?')
+
+    e(r.show('/user/show')).to.be.true
+    e(r.show('/user/unhandled')).to.be.false
+
   it "should skip routes with `browser` route", (done) ->
     r = new Router()
     r.browser '/skipping', (ctx) ->
@@ -323,7 +336,6 @@ describe "Mounted router", ->
       return 'DONE'
 
     r.show '/user', (err, result, ctx) ->
-      console.log("route")
       e(err).to.not.exist
       e(ctx.state.redirecting).to.equal(true)
       e(ctx.state.path).to.equal('/second')

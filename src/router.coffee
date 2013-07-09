@@ -219,7 +219,7 @@ class Router
       if router
         return router.dispatch ctx, finish, fns
       else
-        @trigger('unhandled', ctx)
+        ctx.root.trigger('unhandled', ctx)
         return false
 
 
