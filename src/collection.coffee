@@ -15,10 +15,8 @@ class Collection extends highbrow.Backbone.Collection
       @url ?= options.url
     super
 
-  add: (models, options) ->
-    if @context
-      models = if _.isArray(models) then models.slice() else [models]
-      _.each models, (file) => file.context = @context
+  add: (models, options={}) ->
+    options.context = @context if @context
     super
 
   url: ->
