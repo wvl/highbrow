@@ -1,9 +1,9 @@
 class PaginatedCollection extends Collection
-  initialize: (options={}) ->
-    @page = options.page or 1
-    @perPage ||= 10
-
-  # fetch: (options={}) ->
+  constructor: (models, options={}) ->
+    @query = options.query or {}
+    @query.page = Number(@query.page) || 1
+    @query.perPage = Number(@query.perPage) || @perPage || 10
+    super
 
   parse: (resp) ->
     @page = Number(resp.page)
@@ -11,34 +11,38 @@ class PaginatedCollection extends Collection
     @total = Number(resp.total)
     return resp.models
 
-  queryParams: ->
-    highbrow.querystring.stringify {@page,@perPage}
+  queryParams: (page) ->
+    highbrow.querystring.stringify if page then _.extend(@query, {page}) else @query
 
   url: ->
     @urlRoot.replace(':parent', @parent?.url()) + '?' + @queryParams()
 
   pageInfo: ->
-    info  = {@total, @page, @perPage, prev: false, next: false}
-    info.pages = Math.ceil(@total / @perPage)
+    page = @query.page
+    perPage = @query.perPage
 
-    max = Math.min(@total, @page * @perPage)
-    max = @total if @total == @pages*@perPage
+    info  = {@total, page, perPage, prev: false, next: false, prevUrl: '#', nextUrl: '#'}
+    info.pages = Math.ceil(@total / perPage)
 
-    info.range = [(@page-1)*@perPage+1,max]
+    max = Math.min(@total, page * perPage)
+
+    info.range = [(page-1)*perPage+1,max]
     info.start = info.range[0]
     info.end = info.range[1]
 
-    info.prev = @page - 1 if @page > 1
-    info.next = @page + 1 if @page < info.pages
+    info.prev = page - 1 if page > 1
+    info.prevUrl = '?'+@queryParams(info.prev) if info.prev
+    info.next = page + 1 if page < info.pages
+    info.nextUrl = '?'+@queryParams(info.next) if info.next
 
     info
 
   nextPage: ->
     return false unless @pageInfo().next
-    @page += 1
+    @query.page += 1
     @fetch()
 
   previousPage: ->
     return false unless @pageInfo().prev
-    @page -= 1
+    @query.page -= 1
     @fetch()
