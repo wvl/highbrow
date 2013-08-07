@@ -198,6 +198,9 @@ class Router
         @trigger 'error', err, ctx, result
       else
         @trigger 'show', ctx, result
+
+      @trigger 'page', ctx, result
+
       callback.call(ctx.root,err,result,ctx) if callback
 
 
@@ -259,7 +262,7 @@ class Router
   # It will also install an onclick handler that will intercept
   # any matching routes.
   install: ->
-    @on 'show', (ctx) ->
+    @on 'page', (ctx) ->
       if ctx.replace
         # console.log "replacestate: ", ctx.state, ctx.canonicalPath
         history.replaceState ctx.state, '', ctx.canonicalPath
