@@ -54,6 +54,13 @@ describe "Router", ->
       done()
     r.show '/say'
 
+  it "should expose the route inside the route function", (done) ->
+    r = new Router()
+    r.page '/post/:slug', (ctx) ->
+      e(ctx.root.currentRoute.path).to.equal('/post/:slug')
+      done()
+    e(r.show('/post/blah')).to.be.true
+
   it "should invoke multiple callbacks", (done) ->
     r = new Router()
     r.page '/multiple', first, (ctx) ->

@@ -210,10 +210,11 @@ class Router
     if route
       if ctx.root.currentRoute
         ctx.root.currentRoute.route.close ctx.root.currentRoute.ctx, ->
+          ctx.root.currentRoute = {route,ctx, path: route.path} # if highbrow.browser
           route.dispatch(ctx, finish, fns)
       else
+        ctx.root.currentRoute = {route,ctx, path: route.path} # if highbrow.browser
         route.dispatch(ctx, finish, fns)
-      ctx.root.currentRoute = {route,ctx} # if highbrow.browser
       return true
     else
       router = _.find @routers, (router,base) ->
