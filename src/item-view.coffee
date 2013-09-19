@@ -26,7 +26,6 @@ class ItemView extends Backbone.View
 
   constructor: ->
     super
-    @binder = new Backbone.ModelBinder() if highbrow.browser and @model
 
   #
   # When rendering a collection
@@ -106,33 +105,8 @@ class ItemView extends Backbone.View
     @$el.empty()
     @render()
 
-  # A helper function to simplify using Backbone ModelBinder
-  convertBindings: (bindings) ->
-    result = {}
-    _.each bindings, (val,key) ->
-      if _.isString(val)
-        result[key] = val
-      else
-        result[key] = {selector: val[0]}
-        if member=val[1]
-          result[key].converter = (dir,val,attr,model) ->
-            if dir=='ModelToView'
-              model[member]()
-            else
-              model[member](val)
-    result
-
-
-  # Associated bindings.
-  # TODO: Explain the format of this.bindings
-  initBindings: ->
-    if @bindings
-      bindings = @convertBindings(@bindings)
-      @binder.bind @model, @$el, bindings
-
   # Override for post render customization
   onRender: ->
-    @initBindings() if @bindings
 
   # Override for custom code on dom show
   onShow: ->
