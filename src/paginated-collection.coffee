@@ -6,10 +6,17 @@ class PaginatedCollection extends Collection
     super
 
   parse: (resp) ->
-    @page = Number(resp.page)
-    @perPage = Number(resp.perPage)
-    @total = Number(resp.total)
-    return resp.models
+    if resp.total and resp.models
+      @page = Number(resp.page)
+      @perPage = Number(resp.perPage)
+      @total = Number(resp.total)
+      return resp.models
+    else
+      result = Collection.prototype.parse.call(this, resp)
+      @page = 1
+      @perPage = Math.MAX_VALUE
+      @total = result.length
+      return result
 
   queryParams: (page) ->
     highbrow.querystring.stringify if page then _.extend(@query, {page}) else @query
