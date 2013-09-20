@@ -21,6 +21,9 @@ please contact support.
 # to a model, and a submit event handler that will
 # save the model to the server.
 FormViewMixin =
+  initialize: ->
+    @binder = new Backbone.ModelBinder() if Backbone.ModelBinder and highbrow.browser and @model
+
   # override for custom handling
   formToObject: -> @$('form').toObject()
 

@@ -24,9 +24,6 @@ class ItemView extends Backbone.View
       template = _.underscored(@name)
       @template = if @namespace then @namespace + '/' + template else template
 
-  constructor: ->
-    super
-
   #
   # When rendering a collection
   id: ->
