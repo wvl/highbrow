@@ -6,7 +6,7 @@ class PaginatedCollection extends Collection
     super
 
   parse: (resp) ->
-    if resp.total and resp.models
+    if (resp.total != undefined) and resp.models
       @page = Number(resp.page)
       @perPage = Number(resp.perPage)
       @total = Number(resp.total)
