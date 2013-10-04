@@ -38,9 +38,12 @@ highbrow.installSync = (app, defaultRequest={}) ->
           json = status
           status = 200
         if status==200
-          # Mongoose decorates the object returned with all sorts of extra
-          # attributes that mess up backbone. Shortcut to strip that crap out.
-          options.success(JSON.parse(JSON.stringify(json)))
+          if typeof json == 'string'
+            options.success(JSON.parse(json))
+          else
+            # Mongoose decorates the object returned with all sorts of extra
+            # attributes that mess up backbone. Shortcut to strip that crap out.
+            options.success(JSON.parse(JSON.stringify(json)))
         else
           options.error({status, responseText: JSON.stringify(json)})
       end: (msg) ->
