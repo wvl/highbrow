@@ -263,14 +263,6 @@ class Router
   # It will also install an onclick handler that will intercept
   # any matching routes.
   install: ->
-    @on 'page', (ctx) ->
-      if ctx.replace
-        # console.log "replacestate: ", ctx.state, ctx.canonicalPath
-        history.replaceState ctx.state, '', ctx.canonicalPath
-      else
-        # console.log "pushstate: ", ctx.state, ctx.canonicalPath
-        history.pushState ctx.state, '', ctx.canonicalPath
-
     onpopstate = (e) =>
       @replace(e.state.path, e.state) if e.state
 
@@ -299,8 +291,17 @@ class Router
       origin += ':' + location.port if location.port
       0 == href.indexOf(origin)
 
-    window.addEventListener 'popstate', onpopstate, false
-    highbrow.$(window).bind('click', onclick)
+    if history.pushState
+      @on 'page', (ctx) ->
+        if ctx.replace
+          # console.log "replacestate: ", ctx.state, ctx.canonicalPath
+          history.replaceState ctx.state, '', ctx.canonicalPath
+        else
+          # console.log "pushstate: ", ctx.state, ctx.canonicalPath
+          history.pushState ctx.state, '', ctx.canonicalPath
+
+      window.addEventListener 'popstate', onpopstate, false
+      highbrow.$(window).bind('click', onclick)
 
 _.extend(Router.prototype, Backbone.Events)
 
