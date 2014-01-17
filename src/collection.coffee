@@ -17,7 +17,7 @@ class Collection extends highbrow.Backbone.Collection
 
   add: (models, options={}) ->
     options.context = @context if @context
-    super
+    highbrow.Backbone.Collection.prototype.add.call(this, models, options)
 
   url: ->
     throw new Error("urlRoot not specified for #{@}") unless @urlRoot
