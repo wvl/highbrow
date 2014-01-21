@@ -19,7 +19,7 @@ class PaginatedCollection extends Collection
       return result
 
   queryParams: (page) ->
-    highbrow.querystring.stringify if page then _.extend({}. @query, {page}) else @query
+    highbrow.querystring.stringify if page then _.extend({}, @query, {page}) else @query
 
   url: ->
     @urlRoot.replace(':parent', @parent?.url()) + '?' + @queryParams()
