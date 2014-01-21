@@ -1,5 +1,5 @@
 { "name": "highbrow"
-, "version": "0.2.13"
+, "version": "0.2.14"
 , "description": "A Backbone Base Framework"
 , "main": "lib/highbrow.js"
 , "repository":
