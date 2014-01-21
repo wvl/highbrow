@@ -31,7 +31,7 @@ highbrow.installSync = (app, defaultRequest={}) ->
     if (!options.data && model && (method == 'create' || method == 'update'))
       req.body = model.toJSON()
       
-    req.query = _.extend {}, req.query, options.data
+    req.query = _.extend {}, req.query, options.data, model.query
 
     res =
       send: (status, json) ->
