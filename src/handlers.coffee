@@ -22,6 +22,9 @@ highbrow.installSync = (app, defaultRequest={}) ->
     url = options.url
     url ?= if _.isFunction(model.url) then model.url() else model.url
 
+    if url.slice(0,2)=='//'
+      url = 'http:'+url
+
     req = _.extend {}, baseRequest, defaultRequest, {
       method: methodMap[method]
       url: url
