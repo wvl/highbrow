@@ -15,10 +15,6 @@ highbrow.installSync = (app, defaultRequest={}) ->
 
   highbrow.Backbone.sync = (method, model, options) ->
     # console.log("Sync called", method, model, options)
-    timeout = setTimeout (->
-      options.error("Server Backbone.sync timeout")
-    ), 1000
-
     url = options.url
     url ?= if _.isFunction(model.url) then model.url() else model.url
 
@@ -38,7 +34,6 @@ highbrow.installSync = (app, defaultRequest={}) ->
 
     res =
       send: (status, json) ->
-        clearTimeout timeout
         if !_.isNumber(status)
           json = status
           status = 200
