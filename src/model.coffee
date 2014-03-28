@@ -96,7 +96,10 @@ class Model extends Backbone.Model
         if attrs[key]
           if _.isString(attrs[key])
             # support setting just the id, not the inflated model
-            @[key] = @inflate(attrs[key], key, constructor)
+            if @inflate
+              @[key] = @inflate(attrs[key], key, constructor)
+            else
+              @[key] = attrs[key]
           else
             if @[key] instanceof Backbone.Collection
               @[key].reset(attrs[key], options) unless _.isString(attrs[key][0])
