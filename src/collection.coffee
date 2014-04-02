@@ -21,7 +21,7 @@ class Collection extends highbrow.Backbone.Collection
 
   url: ->
     throw new Error("urlRoot not specified for #{@}") unless @urlRoot
-    @urlRoot.replace(":parent", @parent?.url())
+    _.result(@, 'urlRoot').replace(":parent", @parent?.url())
 
   sync: (method, model, options) ->
     if highbrow.server

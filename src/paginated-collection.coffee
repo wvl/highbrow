@@ -27,7 +27,7 @@ class PaginatedCollection extends Collection
     highbrow.querystring.stringify attrs
 
   url: ->
-    @urlRoot.replace(':parent', @parent?.url()) + '?' + @queryParams()
+    _.result(@, 'urlRoot').replace(':parent', @parent?.url()) + '?' + @queryParams()
 
   pageInfo: ->
     page = @query.page
