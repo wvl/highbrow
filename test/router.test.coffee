@@ -348,3 +348,18 @@ describe "Mounted router", ->
       e(ctx.state.path).to.equal('/second')
       e(result).to.equal('DONE')
       done()
+
+  it "should allow routing to a different page before the first one finishes", (done) ->
+    r = new Router()
+    fn = (timeout) ->
+      (ctx, next) ->
+        setTimeout (-> next()), timeout
+
+    r.page '/first', fn(100), ((ctx,next) -> done("FAIL")), (ctx) ->
+      done("FAIL")
+
+    r.page '/second', fn(50), (ctx) ->
+
+    r.show '/first'
+    r.show '/second', (err, result) ->
+      setTimeout (-> done()), 120

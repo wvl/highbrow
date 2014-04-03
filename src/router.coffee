@@ -114,6 +114,7 @@ class Route
     @unloadHandlers = fns
 
   close: (ctx, callback) ->
+    ctx.finished = true
     return callback() unless @unloadHandlers
     i = 0
     next = (err) =>
