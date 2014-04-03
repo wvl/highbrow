@@ -14,7 +14,7 @@ highbrow.BindTo =
 
   # Unbind all of the events that we have stored.
   unbindAll: ->
-    _.each @_BindToBindings, (binding) -> binding.obj.off(binding.eventName, binding.callback)
+    _.each @_BindToBindings, (binding) -> binding.obj.off(binding.eventName, binding.callback, binding.context)
     @_BindToBindings = []
 
 
