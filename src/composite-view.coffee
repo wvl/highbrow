@@ -27,9 +27,9 @@ class CompositeView extends ItemView
     else
       _.each @_subViews, (view, location) =>
         view.render()
-        if highbrow.browser and @$(location).data('ssr')
+        if highbrow.browser and @$(location).attr('data-ssr')
           # console.log "skipping render", location
-          @$(location).data('ssr', false)
+          @$(location).attr('data-ssr', false)
         else
           @$(location).attr('data-ssr', 'true') unless highbrow.browser
           @$(location).html view.$el
