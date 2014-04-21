@@ -65,7 +65,7 @@ class ItemView extends Backbone.View
     attrs = _.extend({}, @attributes)
     attrs.id = @id if @id
     attrs.id = @id() if @id and _.isFunction(@id)
-    attrs['class'] = @className if @className
+    attrs['class'] = _.result(@, 'className') if @className
     @setElement @make(_.result(@, 'tagName'), attrs), false
 
   #   var el = this.make('li', {'class': 'row'}, this.model.escape('title'));
