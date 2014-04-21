@@ -198,6 +198,7 @@ class Router
       if err
         @trigger 'error', err, ctx, result
       else
+        ctx.root.previousPath = ctx.path
         @trigger 'show', ctx, result
 
       @trigger 'page', ctx, result

@@ -363,3 +363,20 @@ describe "Mounted router", ->
     r.show '/first'
     r.show '/second', (err, result) ->
       setTimeout (-> done()), 120
+
+  it "should store previous route", (done) ->
+    r = new Router()
+    previous = null
+
+    r.page '/first', (ctx) ->
+      previous = '/first'
+
+    r.page '/second', (ctx) ->
+      e(previous).to.equal('/first')
+      e(this.previousPath).to.equal('/first')
+      done()
+
+    r.show '/first'
+    r.show '/second'
+
+
