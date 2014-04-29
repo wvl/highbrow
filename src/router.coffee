@@ -275,7 +275,12 @@ class Router
       el = el.parentNode while el and 'A' != el.nodeName
       return if !el or 'A' != el.nodeName
 
-      if !$(el).data('default') and !Router.canNavigateAway(el.href)
+      $el = $(el)
+
+      # Set data-fallthrough="true" to ignore in-app routing
+      return if $el.data('fallthrough')
+
+      if !$el.data('default') and !Router.canNavigateAway(el.href)
         return e.preventDefault()
 
       href = el.href
@@ -285,7 +290,7 @@ class Router
       # Middle click opens new tab, so ignore
       return if e.which && e.which != 1
       return if e.altKey or e.ctrlKey or e.metaKey or e.shiftKey
-      return if $(el).attr('target') == '_blank'
+      return if $el.attr('target') == '_blank'
 
       e.preventDefault()
       @show path
