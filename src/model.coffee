@@ -14,6 +14,7 @@ class Model extends Backbone.Model
     if options
       @context ?= options.context
       @parent ?= options.parent
+    @_firstSet = true
     super
     @name ?= @constructor.name
 
@@ -77,23 +78,34 @@ class Model extends Backbone.Model
 
   setParent: (@parent) ->
 
+  initializeRelations: ->
+    relations = _.extend({}, @constructor.relations, @constructor.embedded_relations)
+    _.each relations, (constructor, key) =>
+      if !@[key]
+        throw new Error("Unknown relation: #{key}") unless constructor
+        @[key] = new constructor(null, {@context, parent: @})
+
+
   # Pulls any relations out into standalone models/collections
   set: (attrs, options) ->
     relations = _.extend({}, @constructor.relations, @constructor.embedded_relations)
     _.each relations, (constructor, key) =>
       if attrs[key] instanceof Backbone.Collection
+        @[key]?.close()
         @[key] = attrs[key]
         @[key].setParent(@) if @[key]?.setParent
         @[key].context = @context if @context
       else if attrs[key] instanceof Backbone.Model
+        @[key]?.close()
         @[key] = attrs[key]
         @[key].setParent(@) if @[key]?.setParent
         @[key].context = @context if @context
       else
-        throw new Error("Unknown relation: #{key}") unless constructor
-        @[key] ?= new constructor(null, {@context, parent: @})
-
         if attrs[key]
+          throw new Error("Unknown relation: #{key}") unless constructor
+          @[key]?.close()
+          @[key] ?= new constructor(null, {@context, parent: @})
+
           if _.isString(attrs[key])
             # support setting just the id, not the inflated model
             if @inflate
@@ -106,6 +118,7 @@ class Model extends Backbone.Model
             else
               @[key].set(attrs[key], options)
         else if attrs[key] == null
+          @[key]?.close()
           @[key] = null
 
       # @[key]?.on 'all', (args...) =>
@@ -114,6 +127,10 @@ class Model extends Backbone.Model
 
 
       delete attrs[key] if attrs[key]
+
+    if @_firstSet
+      @initializeRelations()
+      @_firstSet = null
 
     super(attrs, options)
 
