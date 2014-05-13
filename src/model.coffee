@@ -129,3 +129,11 @@ class Model extends Backbone.Model
       error: (model,response) ->
         next(response)
     })
+
+  close: ->
+    _.each @constructor.embedded_relations, (relation, key) =>
+      @[key]?.close()
+    _.each @constructor.relations, (relation, key) =>
+      @[key]?.close()
+    @unbindAll()
+

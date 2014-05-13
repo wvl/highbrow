@@ -35,3 +35,7 @@ class Collection extends highbrow.Backbone.Collection
       error: (model,response) ->
         next(response)
     })
+
+  close: ->
+    @each (model) -> model.close()
+    @unbindAll()

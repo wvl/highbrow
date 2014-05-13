@@ -39,3 +39,4 @@ highbrow.setViewModels = (viewModels) ->
 
 _.extend(highbrow.ItemView.prototype, highbrow.BindTo)
 _.extend(highbrow.Model.prototype, highbrow.BindTo)
+_.extend(highbrow.Collection.prototype, highbrow.BindTo)
