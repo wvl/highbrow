@@ -19,6 +19,7 @@ class ItemView extends Backbone.View
     @namespace = @options.namespace if @options.namespace
     @namespace ?= @constructor.namespace
     @workflow ?= @options.workflow || {}
+    @_toClose = {}
     if !@template and @template!=false
       throw new Error("Unknown template. Please provide a name or template") unless @name
       template = _.underscored(@name)
@@ -111,13 +112,26 @@ class ItemView extends Backbone.View
   # Override for custom close code
   onClose: ->
 
+  setClosable: (key, obj) ->
+    @_toClose[key]?.close()
+    @_toClose[key] = obj
+    @[key] = obj
+
+  closeClosable: (key) ->
+    return unless @_toClose[key] and @[key]
+    @[key]?.close()
+    delete @[key]
+    delete @_toClose[key]
+
   # Default `close` implementation, for removing a view from the
   # DOM and unbinding it. Region managers will call this method
   # for you. You can specify an `onClose` method in your view to
   # add custom code that is called after the view is closed.
   close: ->
+    @onClose()   # custom cleanup code
     @unbindAll() # bindto events
     @unbind()    # custom view events
     if @attached then @$el.empty() else @remove()    # remove el from DOM (and DOM events)
-    @onClose()   # custom cleanup code
+    _.each @_toClose, (obj) -> obj.close()
+    @_toClose = {}
 
