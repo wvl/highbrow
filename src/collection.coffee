@@ -39,3 +39,4 @@ class Collection extends highbrow.Backbone.Collection
   close: ->
     @each (model) -> model.close()
     @unbindAll()
+    @closed = true

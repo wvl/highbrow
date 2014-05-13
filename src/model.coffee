@@ -103,7 +103,6 @@ class Model extends Backbone.Model
       else
         if attrs[key]
           throw new Error("Unknown relation: #{key}") unless constructor
-          @[key]?.close()
           @[key] ?= new constructor(null, {@context, parent: @})
 
           if _.isString(attrs[key])
@@ -153,4 +152,5 @@ class Model extends Backbone.Model
     _.each @constructor.relations, (relation, key) =>
       @[key]?.close()
     @unbindAll()
+    @closed = true
 
