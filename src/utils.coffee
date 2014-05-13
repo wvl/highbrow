@@ -1,6 +1,14 @@
 # BindTo facilitates the binding and unbinding of events from objects that extend 
 # `Backbone.Events`. It makes unbinding events, even with anonymous callback 
 # functions, easy.
+
+
+# Accessible variables to determine what environment we're running in.
+highbrow.browser = typeof window != 'undefined'
+highbrow.server = !highbrow.browser
+if highbrow.browser
+  highbrow.$window = $(window)
+
 #
 # Thanks to Johnny Oshika for this code.
 # http://stackoverflow.com/questions/7567404/backbone-js-repopulate-or-recreate-the-view/7607853#7607853
@@ -12,11 +20,35 @@ highbrow.BindTo =
     @_BindToBindings ?= []
     @_BindToBindings.push({obj, eventName, callback, context})
 
+  bindToWindow: (eventName, callback, context) ->
+    return unless highbrow.browser
+    @bindToDOM highbrow.$window, eventName, callback, context
+
+  bindToDOM: ($el, eventName, callback, context) ->
+    return unless highbrow.browser
+    @_BindToBindings ?= []
+    callback = callback.bind(context) if (context)
+    $el.on eventName, callback
+    @_BindToBindings.push {dom: true, eventName, obj: $el, callback}
+
+  unbindDOM: ($el, eventName) ->
+    @_BindToBindings = _.reject @_BindToBindings, (binding) ->
+      match = binding.eventName == eventName and binding.obj == $el
+      $el.off(binding.eventName, binding.callback) if match
+      return match
+
+  unbindWindow: (eventName) ->
+    @unbindDOM highbrow.$window, eventName
+
   # Unbind all of the events that we have stored.
   unbindAll: ->
-    _.each @_BindToBindings, (binding) -> binding.obj.off(binding.eventName, binding.callback, binding.context)
+    _.each @_BindToBindings, (binding) ->
+      if binding.dom
+        binding.obj.off binding.eventName, binding.callback
+      else
+        binding.obj.off(binding.eventName, binding.callback, binding.context)
+      binding.close() if binding.close
     @_BindToBindings = []
-
 
 #
 # Using "Convention over Configuration" to lookup templates, using
@@ -26,10 +58,6 @@ highbrow.underscored = (str) ->
 _.underscored ?=  highbrow.underscored
 
 #
-# Accessible variables to determine what environment we're running in.
-highbrow.browser = typeof window != 'undefined'
-highbrow.server = !highbrow.browser
-
 # Use this function to set what Dom Library to use. This can be
 # cheerio on the server, and jquery (or equivalent) on the client.
 highbrow.setDomLibrary = (lib) ->
