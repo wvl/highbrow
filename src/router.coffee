@@ -60,6 +60,7 @@ class Route
     @keys = []
     @fns = fns
     @regexp = @pathtoRegexp(@path)
+    @canILeave = -> true
 
   dispatch: (ctx, callback, fns=[]) ->
     i = 0
@@ -129,6 +130,11 @@ class Route
 
   unload: (fns...) ->
     @unloadHandlers = fns
+    @
+
+  canLeave: (fn) ->
+    @canILeave = fn
+    @
 
   close: (ctx, callback) ->
     finish = (err) ->
@@ -208,6 +214,7 @@ class Router
       state = {redirecting: true}
 
     ctx = new Context(path, state, @, callback)
+    return false unless @canILeave()
     @dispatch(ctx, callback || ctx.callback)
 
   dispatch: (ctx, callback, fns=[]) ->
@@ -263,6 +270,11 @@ class Router
 
   stop: ->
 
+  canILeave: ->
+    return true unless @currentRoute
+    @currentRoute.route.canILeave @currentRoute.ctx
+
+
   # Replace `path` with optional `state` object
   replace: (path, state, init, callback) ->
     ctx = new Context(path, state, @, callback)
@@ -288,7 +300,11 @@ class Router
   # any matching routes.
   install: ->
     onpopstate = (e) =>
-      @replace(e.state.path, e.state) if e.state
+      if @canILeave()
+        @replace(e.state.path, e.state) if e.state
+      else
+        ctx = @currentRoute.ctx
+        history.pushState ctx.state, '', ctx.canonicalPath
 
     onclick = (e) =>
       # console.log "router: onclick", e

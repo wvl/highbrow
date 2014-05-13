@@ -379,4 +379,28 @@ describe "Mounted router", ->
     r.show '/first'
     r.show '/second'
 
+  it 'should stop routing to new page if canLeave handler returns false', (done) ->
+    r = new Router
+    first = false
+    second = false
+
+    r.page('/first', (ctx) ->
+      first = true
+    ).canLeave (ctx) ->
+      e(ctx.path).to.equal('/first')
+      false
+
+    r.page '/second', (ctx) ->
+      done 'This should not be hit'
+
+    r.show '/first'
+    e(first).to.be.true
+    r.show '/second', ->
+      done 'This should not be hit'
+
+    setTimeout (->
+      e(r.currentRoute.path).to.equal('/first')
+      done()
+    ), 20
+
 
