@@ -20,6 +20,7 @@ class CollectionView extends ItemView
   # Loop through all of the items and render each of them with the specified `itemView`.
   render: ->
     @renderTemplate()
+    _.each @children, (childView) -> childView.close()
     _.each @models(), (model, index) =>
       view = @addChildView(model,index).render()
       @appendHtml(@$el, view.$el, model)
@@ -51,8 +52,8 @@ class CollectionView extends ItemView
   # Handle cleanup and other closing needs for
   # the collection of views.
   close: ->
-    super
     _.each @children, (childView) -> childView.close()
+    super
 
   # Override for custom code on dom show
   onShow: ->
