@@ -24,6 +24,7 @@
 class Context
   constructor: (@path, @state={}, @root, @callback) ->
     @params = []
+    @_toClose = {}
     @canonicalPath = @path
     i = @path.indexOf('?')
     @querystring = if ~i then @path.slice(i+1) else ''
@@ -33,6 +34,22 @@ class Context
   query: (key) ->
     obj = highbrow.querystring.parse(@querystring)
     if key then obj[key] else obj
+
+  set: (key, obj) ->
+    @[key] = obj
+    @_toClose[key] = obj
+
+  close: (key) ->
+    if (key)
+      @[key]?.close()
+      @[key] = null
+      delete @_toClose[key]
+    else
+      _.each @_toClose, ((obj, key) ->
+        obj?.close()
+        @[key] = null
+      ), @
+      @_toClose = {}
 
 
 #
@@ -114,20 +131,25 @@ class Route
     @unloadHandlers = fns
 
   close: (ctx, callback) ->
-    ctx.finished = true
-    return callback() unless @unloadHandlers
+    finish = (err) ->
+      ctx.finished = true
+      ctx.close()
+      callback(err)
+
+    return finish() unless @unloadHandlers
+
     i = 0
     next = (err) =>
-      return callback(err) if err
-      return callback() if i==@unloadHandlers.length
+      return finish(err) if err
+      return finish() if i==@unloadHandlers.length
 
       fn = @unloadHandlers[i++]
-      return callback(new Error("Unknown unload handler")) unless fn
+      return finish(new Error("Unknown unload handler")) unless fn
       try
         fn.call(ctx.root, ctx, next)
       catch err
         ctx.root.trigger 'error', err, ctx
-        return callback(err)
+        return finish(err)
 
     next()
 
