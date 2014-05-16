@@ -18,12 +18,9 @@ highbrow.installSync = (app, defaultRequest={}) ->
     url = options.url
     url ?= if _.isFunction(model.url) then model.url() else model.url
 
-    if url.slice(0,2)=='//'
-      url = 'http:'+url
-
     req = _.extend {}, baseRequest, defaultRequest, {
       method: methodMap[method]
-      url: url
+      url: (if url.slice(0,2)=='//' then 'http:'+url else url)
     }, (options.context|| {})
 
     # Ensure that we have the appropriate request data.
@@ -38,12 +35,14 @@ highbrow.installSync = (app, defaultRequest={}) ->
           json = status
           status = 200
         if status==200
-          if typeof json == 'string'
-            options.success(JSON.parse(json))
-          else
-            # Mongoose decorates the object returned with all sorts of extra
-            # attributes that mess up backbone. Shortcut to strip that crap out.
-            options.success(JSON.parse(JSON.stringify(json)))
+          # Mongoose decorates the object returned with all sorts of extra
+          # attributes that mess up backbone. Shortcut to strip that crap out.
+          resultString = if typeof json == 'string' then json else JSON.stringify(json)
+          if model.context
+            model.context.queryCache ?= {}
+            model.context.queryCache[url] = resultString
+
+          options.success(JSON.parse(resultString))
         else
           options.error({status, responseText: JSON.stringify(json)})
       end: (msg) ->

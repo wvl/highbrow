@@ -23,12 +23,6 @@ class Collection extends highbrow.Backbone.Collection
     throw new Error("urlRoot not specified for #{@}") unless @urlRoot
     _.result(@, 'urlRoot').replace(":parent", @parent?.url())
 
-  sync: (method, model, options) ->
-    if highbrow.server
-      options ?= {}
-      options.context = @context || {}
-    highbrow.Backbone.sync.call(this, method, model, options)
-
   fetchAndContinue: (next) ->
     this.fetch({
       success: -> next()
@@ -40,3 +34,5 @@ class Collection extends highbrow.Backbone.Collection
     @each (model) -> model.close()
     @unbindAll()
     @closed = true
+
+Collection.prototype.sync = Model.prototype.sync

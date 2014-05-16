@@ -137,6 +137,16 @@ class Model extends Backbone.Model
     if highbrow.server
       options ?= {}
       options.context = @context || @parent?.context || {}
+    else
+      if method == 'read'
+        queryCache = model?.context?.queryCache
+        if (queryCache)
+          url = _.result(model, 'url')
+          result = queryCache[url]
+          if (result and options.success)
+            options.success(JSON.parse(result))
+            delete queryCache[url]
+            return
     Backbone.sync.call(this, method, model, options)
 
   fetchAndContinue: (next) ->
