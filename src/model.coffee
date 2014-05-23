@@ -17,6 +17,7 @@ class Model extends Backbone.Model
     @_firstSet = true
     super
     @name ?= @constructor.name
+    @_label ?= @constructor._label
 
   # A node style accessor, that fetches the given id, 
   # calling the given callback on completion, with either
@@ -107,6 +108,7 @@ class Model extends Backbone.Model
 
           if _.isString(attrs[key])
             # support setting just the id, not the inflated model
+            @[key]?.close()
             if @inflate
               @[key] = @inflate(attrs[key], key, constructor)
             else
