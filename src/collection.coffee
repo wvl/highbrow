@@ -30,6 +30,10 @@ class Collection extends highbrow.Backbone.Collection
         next(response)
     })
 
+  _reset: ->
+    @each (model) -> model.close()
+    super
+
   close: ->
     return if @closed
     @each (model) -> model.close()
