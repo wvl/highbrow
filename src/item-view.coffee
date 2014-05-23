@@ -128,10 +128,12 @@ class ItemView extends Backbone.View
   # for you. You can specify an `onClose` method in your view to
   # add custom code that is called after the view is closed.
   close: ->
+    return if @closed
     @onClose()   # custom cleanup code
     @unbindAll() # bindto events
     @unbind()    # custom view events
     if @attached then @$el.empty() else @remove()    # remove el from DOM (and DOM events)
     _.each @_toClose, (obj) -> obj.close()
     @_toClose = {}
+    @closed = true
 

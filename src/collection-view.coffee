@@ -53,6 +53,7 @@ class CollectionView extends ItemView
   # the collection of views.
   close: ->
     _.each @children, (childView) -> childView.close()
+    @children = {}
     super
 
   # Override for custom code on dom show

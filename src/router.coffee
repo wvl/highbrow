@@ -140,6 +140,7 @@ class Route
     finish = (err) ->
       ctx.finished = true
       ctx.close()
+      ctx.root.trigger 'closed', ctx.path
       callback(err)
 
     return finish() unless @unloadHandlers

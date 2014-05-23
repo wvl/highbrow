@@ -157,6 +157,7 @@ class Model extends Backbone.Model
     })
 
   close: ->
+    return if @closed
     _.each @constructor.embedded_relations, (relation, key) =>
       @[key]?.close()
     _.each @constructor.relations, (relation, key) =>
