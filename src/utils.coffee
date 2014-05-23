@@ -12,7 +12,7 @@ if highbrow.browser
 #
 # Thanks to Johnny Oshika for this code.
 # http://stackoverflow.com/questions/7567404/backbone-js-repopulate-or-recreate-the-view/7607853#7607853
-highbrow.BindTo =
+bindTo =
   # Store the event binding in array so it can be unbound easily, at a later point in time.
   bindTo: (obj, eventName, callback, context) ->
     context = context || this
@@ -49,6 +49,8 @@ highbrow.BindTo =
         binding.obj.off(binding.eventName, binding.callback, binding.context)
       binding.close() if binding.close
     @_BindToBindings = []
+
+highbrow.BindTo = Backbone.BindTo or bindTo
 
 #
 # Using "Convention over Configuration" to lookup templates, using
