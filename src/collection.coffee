@@ -8,7 +8,10 @@ class Collection extends highbrow.Backbone.Collection
     coll = new @(models, options)
     return coll
 
+  owner: true,
+
   constructor: (models, options) ->
+    @owner = options?.owner unless options?.owner == undefined
     if options
       @context ?= options.context
       @parent ?= options.parent
@@ -31,13 +34,14 @@ class Collection extends highbrow.Backbone.Collection
     })
 
   _reset: ->
-    @each (model) -> model.close()
+    if @owner
+      @each (model) -> model.close()
     super
 
   close: ->
     return if @closed
-    @each (model) -> model.close()
     @unbindAll()
+    @reset [], {silent: true}
     @closed = true
 
 Collection.prototype.sync = Model.prototype.sync
