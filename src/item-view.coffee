@@ -94,6 +94,7 @@ class ItemView extends Backbone.View
   # Render the view with nct templates
   # You can override this in your view definition.
   render: ->
+    return if @closed
     @renderTemplate()
     @onRender() if highbrow.browser
     @
@@ -129,11 +130,11 @@ class ItemView extends Backbone.View
   # add custom code that is called after the view is closed.
   close: ->
     return if @closed
+    @closed = true
     @onClose()   # custom cleanup code
     @unbindAll() # bindto events
     @unbind()    # custom view events
     if @attached then @$el.empty() else @remove()    # remove el from DOM (and DOM events)
     _.each @_toClose, (obj) -> obj.close()
     @_toClose = {}
-    @closed = true
 
