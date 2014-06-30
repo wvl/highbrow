@@ -61,8 +61,9 @@ class Model extends Backbone.Model
   # Checks whether the model is valid or not.
   savable: ->
     return unless @validations
-    required = _.filter (@validations.required || []), (f) =>
+    required = _.filter((@validations.required || []), ((f) =>
       @get(f)==undefined or @get(f)==''
+    ))
     errors = _.map required, (field) -> {field, code: 'missing_field'}
     if errors.length then {message: "Validation Failed", errors} else null
 

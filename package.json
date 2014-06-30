@@ -22,7 +22,7 @@
   , "express": "*"
   , "mkdirp": "*"
   , "chai": "*"
-  , "coffee-script": "*"
+  , "coffee-script": "^1.7.1"
   , "mocha": "*"
   , "sinon": "*"
   , "sinon-chai": "*"
