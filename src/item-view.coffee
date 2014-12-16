@@ -114,13 +114,13 @@ class ItemView extends Backbone.View
   onClose: ->
 
   setClosable: (key, obj) ->
-    @_toClose[key]?.close()
+    @_toClose[key]?.close?()
     @_toClose[key] = obj
     @[key] = obj
 
   closeClosable: (key) ->
     return unless @_toClose[key] and @[key]
-    @[key]?.close()
+    @[key]?.close?()
     delete @[key]
     delete @_toClose[key]
 
@@ -135,6 +135,6 @@ class ItemView extends Backbone.View
     @unbindAll() # bindto events
     @unbind()    # custom view events
     if @attached then @$el.empty() else @remove()    # remove el from DOM (and DOM events)
-    _.each @_toClose, (obj) -> obj.close()
+    _.each @_toClose, (obj) -> obj.close?()
     @_toClose = {}
 
