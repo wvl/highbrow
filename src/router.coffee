@@ -332,6 +332,10 @@ class Router
       return if $el.attr('target') == '_blank'
 
       e.preventDefault()
+
+      # Add scroll position to previous state before routing
+      history.replaceState _.extend({}, history.state, {scrollY: window.scrollY})
+
       @show path
 
     sameOrigin = (href) ->
@@ -341,6 +345,10 @@ class Router
 
     if history.pushState
       @on 'page', (ctx) ->
+        # Restore previous scroll position, or scroll to top
+        window.scrollTo 0, ctx.state.scrollY || 0
+
+
         if ctx.replace
           # console.log "replacestate: ", ctx.state, ctx.canonicalPath
           history.replaceState ctx.state, '', ctx.canonicalPath
