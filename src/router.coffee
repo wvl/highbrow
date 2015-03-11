@@ -334,7 +334,7 @@ class Router
       e.preventDefault()
 
       # Add scroll position to previous state before routing
-      history.replaceState _.extend({}, history.state, {scrollY: window.scrollY})
+      history.replaceState _.extend({}, history.state, {scrollY: window.scrollY}), ''
 
       @show path
 
