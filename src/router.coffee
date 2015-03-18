@@ -302,7 +302,7 @@ class Router
   install: ->
     onpopstate = (e) =>
       if @canILeave()
-        @replace(e.state.path, e.state) if e.state
+        @replace(e.state.path, e.state) if e.state and e.state.path
       else
         ctx = @currentRoute.ctx
         history.pushState ctx.state, '', ctx.canonicalPath
@@ -334,7 +334,8 @@ class Router
       e.preventDefault()
 
       # Add scroll position to previous state before routing
-      history.replaceState _.extend({}, history.state, {scrollY: window.scrollY}), ''
+      if history.state.path
+        history.replaceState _.extend({}, history.state, {scrollY: window.scrollY}), ''
 
       @show path
 
