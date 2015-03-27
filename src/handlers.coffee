@@ -45,8 +45,10 @@ highbrow.installSync = (app, defaultRequest={}) ->
           options.success(JSON.parse(resultString))
         else
           options.error({status, responseText: JSON.stringify(json)})
+        res.emit('header')
       end: (msg) ->
         options.error({status: 500, responseText: msg})
+        res.emit('header')
       setHeader: ->
 
     # Call the matching route with middleware
